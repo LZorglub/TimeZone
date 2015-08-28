@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Afk.ZoneInfo.RuleDate" Collapsed="true">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAIAEAAAAAAAAAAAIAAACAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>RuleDate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Afk.ZoneInfo.Rule" Collapsed="true">
+    <Position X="2" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAgAgAAIAAQAQAQAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Rule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Afk.ZoneInfo.TzTimeZoneRuleUntil" Collapsed="true">
+    <Position X="5" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TzTimeZoneRuleUntil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

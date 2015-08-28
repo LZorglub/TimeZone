@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8B350ACA-D7D4-446F-BA6E-E112E3F5D794}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Afk.ZoneInfo</RootNamespace>
+    <AssemblyName>Afk.ZoneInfo</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\Afk.ZoneInfo.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Country.cs" />
+    <Compile Include="Namespacedoc.cs" />
+    <Compile Include="T4Zones.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>T4Zones.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TzAdjustmentRule.cs" />
+    <Compile Include="TzTimeInfo.cs" />
+    <Compile Include="DayOfRule.cs" />
+    <Compile Include="DayWorkKind.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rule.cs" />
+    <Compile Include="RuleDate.cs" />
+    <Compile Include="TimeKind.cs" />
+    <Compile Include="TzTimeZoneRule.cs" />
+    <Compile Include="TzTimeZoneRuleDate.cs" />
+    <Compile Include="TzTimeZoneRuleUntil.cs" />
+    <Compile Include="TzUtilities.cs" />
+    <Compile Include="YearType.cs" />
+    <Compile Include="TzTimeZone.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="data\africa" />
+    <EmbeddedResource Include="data\antarctica" />
+    <EmbeddedResource Include="data\asia" />
+    <EmbeddedResource Include="data\australasia" />
+    <EmbeddedResource Include="data\backward" />
+    <EmbeddedResource Include="data\etcetera" />
+    <EmbeddedResource Include="data\europe" />
+    <EmbeddedResource Include="data\factory" />
+    <EmbeddedResource Include="data\leapseconds" />
+    <EmbeddedResource Include="data\northamerica" />
+    <EmbeddedResource Include="data\pacificnew" />
+    <EmbeddedResource Include="data\solar87" />
+    <EmbeddedResource Include="data\solar88" />
+    <EmbeddedResource Include="data\solar89" />
+    <EmbeddedResource Include="data\southamerica" />
+    <EmbeddedResource Include="data\systemv" />
+    <EmbeddedResource Include="data\yearistype.sh" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="data\iso3166.tab" />
+    <EmbeddedResource Include="data\zone.tab" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="data\windowsZones.tab" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\zone1970.tab" />
+    <None Include="T4Zones.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>T4Zones.cs</LastGenOutput>
+    </None>
+    <None Include="ZoneInfo.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
