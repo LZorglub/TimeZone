@@ -43,8 +43,6 @@ However you can use the static functions of class *Afk.ZoneInfo.TzTimeInfo* to e
 
 | Function | Description |
 |----------|-------------|
-| merde    | et re       |
-
 | GetCountries | Gets all countries |
 | GetCountriesCode | Gets all countries code |
 | GetZone | Gets the TzTimeZone related to the zone name specified |
