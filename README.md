@@ -8,6 +8,9 @@ Another weakness is that you need to wait cumulative update to fix wrong convert
 The **Afk.ZoneInfo** is a .Net library 3.5 which use the Iana timezone database (previously named Olson Database).
 By default the library is linked with a database files. You can override it with recent files, for this set the environment variable **TZDIR** with the new directory of database files.
 
+# NUGET
+The easiest way to install is by using [NuGet](https://www.nuget.org/packages/Afk.ZoneInfo/).
+
 # HowTo
 Local time zone can be retrieve by the static *TzTimeZone.CurrentTzTimeZone* member. The following code uses the CurrentTzTimeZone to return the local times that correspond to UTC.
 ```
