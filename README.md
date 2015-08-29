@@ -41,7 +41,7 @@ TzTimeZone timeZone = Afk.ZoneInfo.Zones.America.New_York;
 
 However you can use the static functions of class *Afk.ZoneInfo.TzTimeInfo* to enumerate all available zones.
 | Function | Description |
-| -------- | -------------
+|----------|-------------|
 | GetCountries | Gets all countries |
 | GetCountriesCode | Gets all countries code |
 | GetZone | Gets the TzTimeZone related to the zone name specified |
