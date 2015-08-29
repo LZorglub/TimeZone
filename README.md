@@ -46,8 +46,8 @@ However you can use the static functions of class *Afk.ZoneInfo.TzTimeInfo* to e
 | GetCountries | Gets all countries |
 | GetCountriesCode | Gets all countries code |
 | GetZone | Gets the TzTimeZone related to the zone name specified |
-| GetZones | Gets all time zone name |
-| GetZoneNames | Gets all TzTimeZone |
+| GetZones | Gets all TzTimeZone |
+| GetZoneNames | Gets all timezone name |
 | FindSystemTzTimeZoneById | Gets the TzTimeZone related to the windows id specified |
 
 # External Links
