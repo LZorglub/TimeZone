@@ -351,7 +351,7 @@ namespace Afk.ZoneInfo {
 		/// Gets the country code.
 		/// </summary>
 		/// <returns><b>string[]</b> of country code.</returns>
-		public static string[] GetCountryCode() {
+		public static string[] GetCountriesCode() {
 			return _countryCode.Select(e => e.Code).OrderBy(e => e).ToArray();
 		}
 
@@ -360,7 +360,7 @@ namespace Afk.ZoneInfo {
 		/// </summary>
 		/// <param name="code">Country code</param>
 		/// <returns>A <see cref="Afk.ZoneInfo.Country"/> object that represent the country.</returns>
-		public static Country GetCountry(string code) {
+		public static Country GetCountries(string code) {
 			return _countryCode.FirstOrDefault(e => e.Code == code);
 		}
 

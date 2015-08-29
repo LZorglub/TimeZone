@@ -33,6 +33,21 @@ Local time at paris : 05/01/2011 10:00:00 UTC : 05/01/2011 09:00:00
 Local time at new york : 05/01/2011 04:00:00
 Paris : 05/01/2011 10:00:00 New york : 05/01/2011 04:00:00
 ```
+## Retrieve TimeZone
+*TzTimeZone* can be retrieve directly by members of class *Afk.ZoneInfo.Zones*.
+```
+TzTimeZone timeZone = Afk.ZoneInfo.Zones.America.New_York;
+```
+
+However you can use the static functions of class *Afk.ZoneInfo.TzTimeInfo* to enumerate all available zones.
+Function | Description
+-------- | -------------
+GetCountries | Gets all countries
+GetCountriesCode | Gets all countries code
+GetZone | Gets the TzTimeZone related to the zone name specified
+GetZones | Gets all time zone name
+GetZoneNames | Gets all TzTimeZone
+FindSystemTzTimeZoneById | Gets the TzTimeZone related to the windows id specified
 
 # External Links
 * [Tz database on wikipedia](http://en.wikipedia.org/wiki/Tz_database)
