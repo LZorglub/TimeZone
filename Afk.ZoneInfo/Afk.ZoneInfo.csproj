@@ -114,7 +114,7 @@
     <EmbeddedResource Include="data\windowsZones.tab" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="readme.txt" />
+    <Content Include="ZoneInfo_Readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\zone1970.tab" />

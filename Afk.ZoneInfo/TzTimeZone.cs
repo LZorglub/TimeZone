@@ -584,6 +584,38 @@ namespace Afk.ZoneInfo {
 			return stdoff;
 		}
 
+        #region UnixTime conversion
+        // Gets form DateTimeOffset
+        private const long UnixEpochTicks = 621355968000000000;
+        private const long UnixEpochSeconds = UnixEpochTicks / TimeSpan.TicksPerSecond; // 62,135,596,800
+        private const long UnixEpochMilliseconds = UnixEpochTicks / TimeSpan.TicksPerMillisecond; // 62,135,596,800,000
+
+        /// <summary>
+        /// Returns the number of seconds that have elapsed since 1970-01-01T00:00:00Z.
+        /// </summary>
+        /// <returns></returns>
+        public long ToUnixTimeSeconds(DateTime datetime)
+        {
+            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
+            DateTime d = (datetime.Kind == DateTimeKind.Utc) ? datetime : ToUniversalTime(datetime);
+
+            long seconds = d.Ticks / TimeSpan.TicksPerSecond;
+            return seconds - UnixEpochSeconds;
+        }
+
+        /// <summary>
+        /// Returns the number of milliseconds that have elapsed since 1970-01-01T00:00:00.000Z.
+        /// </summary>
+        /// <returns></returns>
+        public long ToUnixTimeMilliseconds(DateTime datetime)
+        {
+            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
+            DateTime d = (datetime.Kind == DateTimeKind.Utc) ? datetime : ToUniversalTime(datetime);
+
+            long milliseconds = d.Ticks / TimeSpan.TicksPerMillisecond;
+            return milliseconds - UnixEpochMilliseconds;
+        }
+        #endregion
         /*
         /// <summary>
         /// Retrieves an array of <see cref="TzAdjustmentRule"/> objects that apply to the current <see cref="TzTimeZone"/> object.
@@ -627,5 +659,5 @@ namespace Afk.ZoneInfo {
             return adjustmentRules.ToArray();
         }
          * */
-	}
+    }
 }
