@@ -38,3 +38,5 @@ using System.Runtime.InteropServices;
 
 // Release 1.4.0.0
 // - Add XmlTzConvert
+// Release
+// - Add unix time convert
