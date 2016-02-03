@@ -84,6 +84,7 @@
     <Compile Include="TzTimeZoneRuleDate.cs" />
     <Compile Include="TzTimeZoneRuleUntil.cs" />
     <Compile Include="TzUtilities.cs" />
+    <Compile Include="XmlTzConvert.cs" />
     <Compile Include="YearType.cs" />
     <Compile Include="TzTimeZone.cs" />
   </ItemGroup>
