@@ -61,24 +61,77 @@ namespace TestZoneInfo
         #endregion
 
         [TestMethod]
-        public void TestMethod1()
+        public void TestYear2000()
         {
-            DateTime utc = DateTime.UtcNow;
-           
-            DateTime thisTime = DateTime.Now;
-            Console.WriteLine("Time in {0} zone: {1}", TimeZoneInfo.Local.IsDaylightSavingTime(thisTime) ?
-                              TimeZoneInfo.Local.DaylightName : TimeZoneInfo.Local.StandardName, thisTime);
-            Console.WriteLine("   UTC Time: {0}", TimeZoneInfo.ConvertTimeToUtc(thisTime, TimeZoneInfo.Local));
-            // Get Tokyo Standard Time zone
-            TimeZoneInfo tst = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
-            DateTime tstTime = TimeZoneInfo.ConvertTime(thisTime, TimeZoneInfo.Local, tst);
-            Console.WriteLine("Time in {0} zone: {1}", TimeZoneInfo.Local.IsDaylightSavingTime(tstTime) ?
-                              tst.DaylightName : tst.StandardName, tstTime);
-            Console.WriteLine("   UTC Time: {0}", TimeZoneInfo.ConvertTimeToUtc(tstTime, tst));
+            DateTime utc = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-            DateTime local = Zones.Europe.Paris.ToLocalTime(utc);
+            // windows
+            TimeZoneInfo parisZone = TimeZoneInfo.FindSystemTimeZoneById("Romance Standard Time");
 
-           
+            // ZoneInfo
+            var zoneInfo = Zones.Europe.Paris;
+
+            while (utc.Year == 2000)
+            {
+                var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, parisZone);
+                var localZoneInfo = zoneInfo.ToLocalTime(utc);
+
+                Assert.AreEqual(localWindows, localZoneInfo);
+
+                utc = utc.AddHours(1);
+            }
+        }
+
+        [TestMethod]
+        public void TestNewZealand()
+        {
+            DateTime utc = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            // windows
+            TimeZoneInfo nzZone = TimeZoneInfo.FindSystemTimeZoneById("New Zealand Standard Time");
+
+            // ZoneInfo
+            var zoneInfo = TzTimeInfo.FindSystemTzTimeZoneById("New Zealand Standard Time");
+
+            while (utc.Year <= 2017)
+            {
+                var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, nzZone);
+                var localZoneInfo = zoneInfo.ToLocalTime(utc);
+
+                Assert.AreEqual(localWindows, localZoneInfo);
+
+                utc = utc.AddHours(1);
+            }
+
+            Assert.AreEqual(utc.Year, 2018);
+        }
+
+        [TestMethod]
+        public void TestSamoa2011()
+        {
+            // Refer to https://en.wikipedia.org/wiki/Time_in_Samoa for explanation
+            // The 30th december 2011 dont exists
+            DateTime utc = new DateTime(2011, 12, 28, 0, 0, 0, DateTimeKind.Utc);
+
+            // windows
+            TimeZoneInfo samoaZone = TimeZoneInfo.FindSystemTimeZoneById("Samoa Standard Time");
+
+            // ZoneInfo
+            var zoneInfo = TzTimeInfo.FindSystemTzTimeZoneById("Samoa Standard Time");
+
+            while (utc.Year <= 2012)
+            {
+                var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, samoaZone);
+                var localZoneInfo = zoneInfo.ToLocalTime(utc);
+
+                // Windows fails on the 30th
+                if (localWindows.Day == 30 && localZoneInfo.Day == 31)
+                {
+                    break;
+                }
+                Assert.AreEqual(localWindows, localZoneInfo);
+                utc = utc.AddHours(1);
+            }
         }
     }
 }
