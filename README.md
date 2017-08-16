@@ -1,8 +1,11 @@
 # TimeZone
 **Afk.ZoneInfo** is an alternative to the framework class *System.TimeZoneInfo*.
 
-The **Afk.ZoneInfo** is a .Net library 3.5 which use the Iana timezone database (previously named Olson Database).
+The **Afk.ZoneInfo** use the Iana timezone database (previously named Olson Database).
 By default the library is linked with a database files. You can override it with recent files, for this set the environment variable **TZDIR** with the new directory of database files.
+
+# VERSION
+The library is compatible with netstandard, net40, net45 and net46
 
 # NUGET
 The easiest way to install is by using [NuGet](https://www.nuget.org/packages/Afk.ZoneInfo/).
