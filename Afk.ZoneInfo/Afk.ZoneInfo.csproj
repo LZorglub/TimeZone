@@ -1,93 +1,100 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8B350ACA-D7D4-446F-BA6E-E112E3F5D794}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Afk.ZoneInfo</RootNamespace>
-    <AssemblyName>Afk.ZoneInfo</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworks>netstandard1.4;net40;net45;net46</TargetFrameworks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\Afk.ZoneInfo.XML</DocumentationFile>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.4'">
+    <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Release\Afk.ZoneInfo.XML</DocumentationFile>
+
+  <PropertyGroup>
+    <Version>2.0.0.0</Version>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Authors>Luc Nempont</Authors>
+    <Description>Afk.ZoneInfo is a .Net library 3.5 which use the Iana timezone database. By default the library is linked with database files, to override it set the environment variable TZDIR with the new directory of database files.</Description>
+    <Copyright>Copyright (c) 2010</Copyright>
   </PropertyGroup>
-  <ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)'=='net40' OR '$(TargetFramework)'=='net45' OR '$(TargetFramework)'=='net46'">
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net45' OR '$(TargetFramework)'=='net46'">
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageId>Afk.ZoneInfo</PackageId>
+    <PackageVersion>2.0.0.0</PackageVersion>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>timezone datetime zoneinfo iana c# olson</PackageTags>
+    <PackageProjectUrl>https://github.com/LZorglub/TimeZone</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/LZorglub/TimeZone/master/Timezone64x64.png</PackageIconUrl>
+    <Authors>Luc</Authors>
+    <Title>TimeZone</Title>
+    <Copyright>Copyright 2010</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.4|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard1.4\Afk.ZoneInfo.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.4|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard1.4\Afk.ZoneInfo.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
+    <DocumentationFile>bin\Debug\net40\Afk.ZoneInfo.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|AnyCPU'">
+    <DocumentationFile>bin\Release\net40\Afk.ZoneInfo.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
+    <DocumentationFile>bin\Debug\net45\Afk.ZoneInfo.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
+    <DocumentationFile>bin\Release\net45\Afk.ZoneInfo.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net46|AnyCPU'">
+    <DocumentationFile>bin\Debug\net46\Afk.ZoneInfo.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
+    <DocumentationFile>bin\Release\net46\Afk.ZoneInfo.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="Country.cs" />
-    <Compile Include="Namespacedoc.cs" />
-    <Compile Include="T4Zones.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>T4Zones.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TzAdjustmentRule.cs" />
-    <Compile Include="TzTimeInfo.cs" />
-    <Compile Include="DayOfRule.cs" />
-    <Compile Include="DayWorkKind.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rule.cs" />
-    <Compile Include="RuleDate.cs" />
-    <Compile Include="TimeKind.cs" />
-    <Compile Include="TzTimeZoneRule.cs" />
-    <Compile Include="TzTimeZoneRuleDate.cs" />
-    <Compile Include="TzTimeZoneRuleUntil.cs" />
-    <Compile Include="TzUtilities.cs" />
-    <Compile Include="XmlTzConvert.cs" />
-    <Compile Include="YearType.cs" />
-    <Compile Include="TzTimeZone.cs" />
+    <None Remove="data\africa" />
+    <None Remove="data\antarctica" />
+    <None Remove="data\asia" />
+    <None Remove="data\australasia" />
+    <None Remove="data\backward" />
+    <None Remove="data\etcetera" />
+    <None Remove="data\europe" />
+    <None Remove="data\factory" />
+    <None Remove="data\iso3166.tab" />
+    <None Remove="data\leapseconds" />
+    <None Remove="data\northamerica" />
+    <None Remove="data\pacificnew" />
+    <None Remove="data\solar87" />
+    <None Remove="data\solar88" />
+    <None Remove="data\solar89" />
+    <None Remove="data\southamerica" />
+    <None Remove="data\systemv" />
+    <None Remove="data\windowsZones.tab" />
+    <None Remove="data\yearistype.sh" />
+    <None Remove="data\zone.tab" />
+    <None Remove="data\zone1970.tab" />
   </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="data\africa" />
     <EmbeddedResource Include="data\antarctica" />
@@ -97,6 +104,7 @@
     <EmbeddedResource Include="data\etcetera" />
     <EmbeddedResource Include="data\europe" />
     <EmbeddedResource Include="data\factory" />
+    <EmbeddedResource Include="data\iso3166.tab" />
     <EmbeddedResource Include="data\leapseconds" />
     <EmbeddedResource Include="data\northamerica" />
     <EmbeddedResource Include="data\pacificnew" />
@@ -105,52 +113,29 @@
     <EmbeddedResource Include="data\solar89" />
     <EmbeddedResource Include="data\southamerica" />
     <EmbeddedResource Include="data\systemv" />
-    <EmbeddedResource Include="data\yearistype.sh" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="data\iso3166.tab" />
-    <EmbeddedResource Include="data\zone.tab" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="data\windowsZones.tab" />
+    <EmbeddedResource Include="data\yearistype.sh" />
+    <EmbeddedResource Include="data\zone.tab" />
+    <EmbeddedResource Include="data\zone1970.tab" />
   </ItemGroup>
+
   <ItemGroup>
-    <Content Include="ZoneInfo_Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\zone1970.tab" />
-    <None Include="T4Zones.tt">
+    <None Update="T4Zones.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>T4Zones.cs</LastGenOutput>
     </None>
-    <None Include="ZoneInfo.cd" />
   </ItemGroup>
+
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
+
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
+    <Compile Update="T4Zones.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>T4Zones.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

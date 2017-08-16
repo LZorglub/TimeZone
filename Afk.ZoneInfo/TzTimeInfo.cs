@@ -58,9 +58,10 @@ namespace Afk.ZoneInfo {
 		/// Load resources
 		/// </summary>
 		private static void LoadRessources() {
-			Assembly a = Assembly.GetExecutingAssembly();
+            Assembly a = MultiPlatform.GetCurrentAssembly();
 
-			string[] resnames = a.GetManifestResourceNames();
+
+            string[] resnames = a.GetManifestResourceNames();
 
 			foreach (string resource in resnames) {
 				if (resource.StartsWith("Afk.ZoneInfo.data.")) {
@@ -116,7 +117,7 @@ namespace Afk.ZoneInfo {
 
 			// Si le mapping windows/TZID n'est pas présent on utilise la ressource incorporée
 			if (_mappingWindowsTZID.Count == 0) {
-				using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Afk.ZoneInfo.data.windowsZones.tab")) {
+				using (Stream stream = MultiPlatform.GetCurrentAssembly().GetManifestResourceStream("Afk.ZoneInfo.data.windowsZones.tab")) {
 					using (TextReader reader = new StreamReader(stream)) {
 						LoadMappingZones(reader);
 					}

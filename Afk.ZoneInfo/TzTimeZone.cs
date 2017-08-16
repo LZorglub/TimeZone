@@ -129,11 +129,6 @@ namespace Afk.ZoneInfo {
 			return dates.ToArray();
 		}
 
-		/// <summary>
-		/// Détermine si une valeur de date et d'heure pour le fuseau courant est ambigue
-		/// </summary>
-		/// <param name="dateTime">Valeur de date et d'heure</param>
-		/// <returns>true si le paramètre dateTime est ambigu, sinon false</returns>
 		//public bool IsAmbiguousTime(DateTime dateTime) {
 		//    if (dateTime.Kind == DateTimeKind.Utc) return false;
 		//    if (dateTime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");

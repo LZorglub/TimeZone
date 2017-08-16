@@ -48,7 +48,7 @@ using System.Text;
 namespace Afk.ZoneInfo {
 
 	/// <summary>
-	/// Enumerate all time zone
+	/// Enumerates all time zone
 	/// </summary>
 	public sealed class Zones {
 		/// <summary>
@@ -124,7 +124,7 @@ foreach(Regions child in region.Childs) {
 	if (child.Childs.Count > 0) OutputRegion(child, level + 1);
 	else {
 		this.WriteLine(new string('\t',2+level) + "/// <summary>");
-		this.WriteLine(new string('\t',2+level) + "/// Get the timezone for " + child.FullName);
+		this.WriteLine(new string('\t',2+level) + "/// Gets the timezone for " + child.FullName);
 		this.WriteLine(new string('\t',2+level) + "/// </summary>");
 		this.WriteLine(new string('\t',2+level) + "public static TzTimeZone " + child.RegionName.Replace('-', '_') + " { get { return TzTimeInfo.GetZone(\"" + child.FullName + "\"); } }");
 	}

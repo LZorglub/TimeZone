@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Afk.ZoneInfo {
-	class TzTimeZoneRuleDate : ICloneable {
+	class TzTimeZoneRuleDate {
 		public static readonly TzTimeZoneRuleDate MinValue;
 		public static readonly TzTimeZoneRuleDate MaxValue;
 
