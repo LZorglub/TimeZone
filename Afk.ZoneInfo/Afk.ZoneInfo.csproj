@@ -9,10 +9,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>2.0.0.0</Version>
-    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.2.0.0</Version>
+    <FileVersion>2.2.0.0</FileVersion>
     <Authors>Luc Nempont</Authors>
-    <Description>Afk.ZoneInfo is a .Net library 3.5 which use the Iana timezone database. By default the library is linked with database files, to override it set the environment variable TZDIR with the new directory of database files.</Description>
+    <Description>Afk.ZoneInfo is a .Net library which use the Iana timezone database. By default the library is linked with database files, to override it set the environment variable TZDIR with the new directory of database files.</Description>
     <Copyright>Copyright (c) 2010</Copyright>
   </PropertyGroup>
   
@@ -29,7 +29,7 @@
 
   <PropertyGroup>
     <PackageId>Afk.ZoneInfo</PackageId>
-    <PackageVersion>2.0.0.0</PackageVersion>
+    <PackageVersion>2.2.0.0</PackageVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>timezone datetime zoneinfo iana c# olson</PackageTags>
     <PackageProjectUrl>https://github.com/LZorglub/TimeZone</PackageProjectUrl>

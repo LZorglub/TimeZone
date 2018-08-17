@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
+using System.Linq;
 
-namespace Afk.ZoneInfo {
-	/// <summary>
-	/// Represents a time zone.
-	/// </summary>
-	/// <remarks>
-	/// The format of each line is:
-	/// Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
-	/// </remarks>
-	public sealed class TzTimeZone {
+namespace Afk.ZoneInfo
+{
+    /// <summary>
+    /// Represents a time zone.
+    /// </summary>
+    /// <remarks>
+    /// The format of each line is:
+    /// Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+    /// </remarks>
+    public sealed class TzTimeZone {
 		private List<TzTimeZoneRule> _zoneRules;
 		private Dictionary<int, List<TzTimeZoneRuleDate>> _zoneDates;
 
@@ -201,18 +201,9 @@ namespace Afk.ZoneInfo {
 		/// Returns the local time that corresponds to a specified date and time value. 
 		/// </summary>
 		/// <param name="datetime">A date and time.</param>
+		/// <param name="optimize">Value which indicates whether optimize the convert</param>
 		/// <returns>A <see cref="System.DateTime"/> object whose value is the local time that corresponds to time.</returns>
-		public DateTime ToLocalTime(DateTime datetime) {
-			return ToLocalTime(datetime, true);
-		}
-
-		/// <summary>
-		/// Returns the local time that corresponds to a specified date and time value. 
-		/// </summary>
-		/// <param name="datetime">A date and time.</param>
-		/// <param name="optimize">Indique qu'il faut optimiser la recherche</param>
-		/// <returns>A <see cref="System.DateTime"/> object whose value is the local time that corresponds to time.</returns>
-		internal DateTime ToLocalTime(DateTime datetime, bool optimize) {
+		public DateTime ToLocalTime(DateTime datetime, bool optimize = false) {
 			if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
 
 			if (datetime.Kind == DateTimeKind.Local) return datetime;
@@ -235,25 +226,16 @@ namespace Afk.ZoneInfo {
 			TimeSpan gmtOffset = zr.zoneRule.GmtOffset;
 
 			DateTime wallclock = datetime.Add(gmtOffset + zr.standardOffset);
-			return new DateTime(wallclock.Year, wallclock.Month, wallclock.Day, wallclock.Hour, wallclock.Minute, wallclock.Second, DateTimeKind.Local);
+			return new DateTime(wallclock.Ticks, DateTimeKind.Local);
 		}
 
 		/// <summary>
 		/// Returns the Coordinated Universal Time (UTC) that corresponds to a specified time.
 		/// </summary>
 		/// <param name="datetime">A date and time.</param>
+		/// <param name="optimize">Value which indicates whether to optimize the convert</param>
 		/// <returns>A <see cref="DateTime"/> object whose value is the Coordinated Universal Time (UTC) that corresponds to time.</returns>
-		public DateTime ToUniversalTime(DateTime datetime) {
-			return ToUniversalTime(datetime, true);
-		}
-
-		/// <summary>
-		/// Returns the Coordinated Universal Time (UTC) that corresponds to a specified time.
-		/// </summary>
-		/// <param name="datetime">A date and time.</param>
-		/// <param name="optimize">Indique qu'il faut optimiser la recherche</param>
-		/// <returns>A <see cref="DateTime"/> object whose value is the Coordinated Universal Time (UTC) that corresponds to time.</returns>
-		internal DateTime ToUniversalTime(DateTime datetime, bool optimize) {
+		internal DateTime ToUniversalTime(DateTime datetime, bool optimize = false) {
 			if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
 
 			if (datetime.Kind == DateTimeKind.Utc) return datetime;
@@ -276,7 +258,7 @@ namespace Afk.ZoneInfo {
 			TimeSpan gmtOffset = zr.zoneRule.GmtOffset;
 
 			DateTime utcclock = datetime.Add(-gmtOffset).Add(-zr.standardOffset);
-			return new DateTime(utcclock.Year, utcclock.Month, utcclock.Day, utcclock.Hour, utcclock.Minute, utcclock.Second, DateTimeKind.Utc);
+			return new DateTime(utcclock.Ticks, DateTimeKind.Utc);
 		}
 
 		/// <summary>

@@ -1,13 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Afk.ZoneInfo {
+namespace Afk.ZoneInfo
+{
+
+    /// <summary>
+    /// Represents a timezone rule date
+    /// </summary>
 	class TzTimeZoneRuleDate {
 		public static readonly TzTimeZoneRuleDate MinValue;
 		public static readonly TzTimeZoneRuleDate MaxValue;
 
+        /// <summary>
+        /// Initialize static instance of <see cref="TzTimeZoneRuleDate"/>
+        /// </summary>
 		static TzTimeZoneRuleDate() {
 			MinValue = new TzTimeZoneRuleDate();
 			MinValue._utc = new DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -33,6 +38,12 @@ namespace Afk.ZoneInfo {
 
 		public TimeSpan GmtOffset { get { return _gmtoff; } }
 
+        /// <summary>
+        /// Initialize a new instance of <see cref="TzTimeZoneRuleDate"/>
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <param name="gmtOffset"></param>
+        /// <param name="standardOffset"></param>
 		public TzTimeZoneRuleDate(DateTime dateTime, TimeSpan gmtOffset, TimeSpan standardOffset) {
 			if (dateTime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "dateTime");
 
@@ -47,6 +58,13 @@ namespace Afk.ZoneInfo {
 			}
 		}
 
+        /// <summary>
+        /// Initialize a new instance of <see cref="TzTimeZoneRuleDate"/>
+        /// </summary>
+        /// <param name="utc"></param>
+        /// <param name="local"></param>
+        /// <param name="gmtOffset"></param>
+        /// <param name="standardOffset"></param>
 		public TzTimeZoneRuleDate(DateTime utc, DateTime local, TimeSpan gmtOffset, TimeSpan standardOffset) {
 			if (utc.Kind != DateTimeKind.Utc) throw new ArgumentException("Datetime kind utc expected", "utc");
 			if (local.Kind != DateTimeKind.Local) throw new ArgumentException("Datetime kind local expected", "local");
@@ -58,6 +76,10 @@ namespace Afk.ZoneInfo {
 		private TzTimeZoneRuleDate() {
 		}
 
+        /// <summary>
+        /// Gets the local datetime of current instance
+        /// </summary>
+        /// <returns></returns>
 		public DateTime ToLocalTime() {
 			return _local;
 		}
@@ -134,12 +156,5 @@ namespace Afk.ZoneInfo {
 
 			return func(date1, date2._utc);
 		}
-		#region ICloneable Membres
-
-		public object Clone() {
-			return this.MemberwiseClone();
-		}
-
-		#endregion
 	}
 }

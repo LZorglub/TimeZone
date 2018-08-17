@@ -304,12 +304,12 @@ namespace Afk.ZoneInfo {
 					}
 
 					// La date de départ de la règle est celle de la règle précédente
-					zr.StartZone = (TzTimeZoneRuleDate)start.Clone();
+					zr.StartZone = start;
 
 					// Calcul de la date de fin de zone rule
 					if (zr.Until == null) {
 						// Max time
-						zr.EndZone = (TzTimeZoneRuleDate)TzTimeZoneRuleDate.MaxValue.Clone();
+						zr.EndZone = TzTimeZoneRuleDate.MaxValue;
 					}
 					else if (zr.RuleName == "-") {
 						stdoff = TimeSpan.Zero;

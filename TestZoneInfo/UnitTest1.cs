@@ -1,9 +1,7 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Afk.ZoneInfo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Afk.ZoneInfo;
+using System;
+using System.Linq;
 
 namespace TestZoneInfo
 {
@@ -131,6 +129,25 @@ namespace TestZoneInfo
                 }
                 Assert.AreEqual(localWindows, localZoneInfo);
                 utc = utc.AddHours(1);
+            }
+        }
+
+        [TestMethod]
+        public void TestTicks()
+        {
+            var zone = TzTimeInfo.GetZones().Single(z => z.Name == "America/Argentina/Buenos_Aires");
+
+            var start = new DateTime(1998, 12, 31, 23, 56, 15, DateTimeKind.Utc);
+
+            long expected = 630507345750000000;
+
+            for (int i = 0; i < 10; i++)
+            {
+                start = start.AddTicks(i);
+                expected = expected + i;
+
+                var actual = zone.ToLocalTime(start).Ticks;
+                Assert.AreEqual(expected, actual);
             }
         }
     }
