@@ -269,7 +269,7 @@ namespace Afk.ZoneInfo
         /// <param name="datetime">A date and time.</param>
         /// <param name="optimize">Value which indicates whether to optimize the convert</param>
         /// <returns>A <see cref="DateTime"/> object whose value is the Coordinated Universal Time (UTC) that corresponds to time.</returns>
-        internal DateTime ToUniversalTime(DateTime datetime, bool optimize = false)
+        public DateTime ToUniversalTime(DateTime datetime, bool optimize = false)
         {
             if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
 
