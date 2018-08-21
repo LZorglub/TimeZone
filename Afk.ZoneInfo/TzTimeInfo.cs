@@ -310,16 +310,42 @@ namespace Afk.ZoneInfo
         /// <summary>
         /// Construit l'ensemble des règles chargées
         /// </summary>
+        /// <remarks>
+        /// La date de début d'une zone ne correspond pas forcement à la date de fin de zone précédente. Exemple avec Pacific/Samoa ou
+        /// on perd 1 journée le 30 décembre 2011
+        /// Zone Pacific/Apia	 12:33:04 -	LMT	1892 Jul  5
+		///	-11:26:56 -	LMT	1911
+		///	-11:30	-	-1130	1950
+		///	-11:00	WS	-11/-10	2011 Dec 29 24:00
+		///	 13:00	WS	+13/+14
+        ///	 
+        /// Certaines dates de fin peuvent coincider avec des règles de changement
+        /// Exemple : America/Grand_Turk
+        /// -5:00	US	E%sT	2015 Nov Sun>=1 2:00 coincide avec la régle Rule	US	2007	max	-	Nov	Sun>=1	2:00	0	S
+        /// -4:00	-	AST	2018 Mar 11 3:00  
+        /// 1/11/2015 01:00 EDT (sunday locale) => 05:00u
+        /// 1/11/2015 02:00 AST (sunday locale) => 06:00u
+        /// 
+        /// -4:00	-	AST	2018 Mar 11 3:00 coincide avec la régle Rule	US	2007	max	-	Mar	Sun>=8	2:00 (07:00 +5)	1:00	D
+        /// -5:00	US	E%sT
+        /// 11/03/2018 02:00 AST => 06:00u
+        /// 11/03/2018 03:00 EDT => 07:00u
+        /// 11/03/2018 04:00 EDT => 08:00u
+        /// 
+        /// La date de début UTC de la zone suivante est la date de fin UTC de la zone précédente, ce n'est pas vrai pour ce qui concerne les
+        /// dates locales. Exemple de samoa qui avance de 24 heures.
+        /// 
+        /// Date de début : On construit la date à partir de la date utc précédente et on applique la régle courante pour obtenir la date locale
+        /// Date de fin : On construit la date à partir de la date until en appliquant le changement DST précédent strictement inférieure
+        /// </remarks>
         private static void BuildZone()
         {
-
             var ienum = _zones.GetEnumerator();
 
             while (ienum.MoveNext())
             {
                 TzTimeZone temp = ienum.Current.Value;
 
-                TzTimeZoneRuleDate start = TzTimeZoneRuleDate.MinValue;
                 TimeSpan stdoff = TimeSpan.Zero;
 
                 // Coordonnées de la zone
@@ -327,12 +353,11 @@ namespace Afk.ZoneInfo
                 temp.Coordinates = tz.coordinates;
                 temp.Comment = tz.comment;
 
-                // Pour chaque règle composant une zone on calcule précisement la date de début et de fin
-                // d'application de la règle en UTC et en Local.
-                foreach (TzTimeZoneRule zr in temp.ZoneRules)
+                for (int index = 0; index < temp.ZoneRules.Count; index++)
                 {
-                    // Si le nom de la règle n'est pas - et n'est pas connu alors il s'agit directement
-                    // du décalage standard à appliquer.
+                    TzTimeZoneRule zr = temp.ZoneRules[index];
+
+                    // Zone avec un décalage fixe
                     if (zr.RuleName != "-" && !_rules.ContainsKey(zr.RuleName))
                     {
                         zr.FixedStandardOffset = TzUtilities.GetHMS(zr.RuleName);
@@ -342,13 +367,36 @@ namespace Afk.ZoneInfo
                             throw new ArgumentException("%s in ruleless zone " + temp.Name + "(" + temp.Filename + "," + temp.LineNumber + ")");
                     }
 
-                    // La date de départ de la règle est celle de la règle précédente
-                    zr.StartZone = start;
+                    #region Start date
+                    if (index == 0)
+                    {
+                        zr.StartZone = TzTimeZoneRuleDate.MinValue;
+                    }
+                    else
+                    {
+                        DateTime previousUTCDate = temp.ZoneRules[index - 1].EndZone.UtcDate;
+                        TimeSpan previousStandardOffset = temp.ZoneRules[index - 1].EndZone.StandardOffset;
 
-                    // Calcul de la date de fin de zone rule
+                        if (zr.RuleName == "-")
+                        {
+                            zr.StartZone = new TzTimeZoneRuleDate(previousUTCDate, zr.GmtOffset, TimeSpan.Zero);
+                        }
+                        else if (!_rules.ContainsKey(zr.RuleName))
+                        {
+                            zr.StartZone = new TzTimeZoneRuleDate(previousUTCDate, zr.GmtOffset, zr.FixedStandardOffset);
+                        }
+                        else
+                        {
+                            // Il faut rechercher si pour la date UTC on aurait une régle qui s'applique
+                            Rule lastRule = TzTimeZone.GetRuleAtPoint(_rules[zr.RuleName], previousUTCDate, zr.GmtOffset, previousStandardOffset);
+                            zr.StartZone = new TzTimeZoneRuleDate(previousUTCDate, zr.GmtOffset, lastRule?.StandardOffset ?? previousStandardOffset);
+                        }
+                    }
+                    #endregion
+
+                    #region End date
                     if (zr.Until == null)
                     {
-                        // Max time
                         zr.EndZone = TzTimeZoneRuleDate.MaxValue;
                     }
                     else if (zr.RuleName == "-")
@@ -358,19 +406,18 @@ namespace Afk.ZoneInfo
                     }
                     else if (!_rules.ContainsKey(zr.RuleName))
                     {
-                        // Zone sans règle
-                        // Si la règle est - alors stdoff = TimeSpan.zero
-                        zr.EndZone = new TzTimeZoneRuleDate(TzUtilities.GetDateTime(zr.Until, zr.Until.Year, zr.GmtOffset, zr.FixedStandardOffset, DateTimeKind.Utc), zr.GmtOffset, zr.FixedStandardOffset);
+                        // Zone avec décalage fixe
                         stdoff = zr.FixedStandardOffset;
+                        zr.EndZone = new TzTimeZoneRuleDate(TzUtilities.GetDateTime(zr.Until, zr.Until.Year, zr.GmtOffset, stdoff, DateTimeKind.Utc), zr.GmtOffset, stdoff);
                     }
                     else
                     {
-                        Rule lastRule = TzTimeZone.GetLastStandardOffset(_rules[zr.RuleName], zr.Until, zr.StartZone, zr.GmtOffset);
+                        Rule lastRule = TzTimeZone.GetLastStandardOffset(_rules[zr.RuleName], zr.Until, zr.StartZone, zr.GmtOffset, RuleSearchKind.LessThan);
                         if (lastRule != null)
                             stdoff = lastRule.StandardOffset;
                         zr.EndZone = new TzTimeZoneRuleDate(TzUtilities.GetDateTime(zr.Until, zr.Until.Year, zr.GmtOffset, stdoff, DateTimeKind.Utc), zr.GmtOffset, stdoff);
                     }
-                    start = zr.EndZone;
+                    #endregion
                 }
             }
         }

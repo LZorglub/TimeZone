@@ -15,28 +15,34 @@ namespace Afk.ZoneInfo
         /// </summary>
 		static TzTimeZoneRuleDate() {
 			MinValue = new TzTimeZoneRuleDate();
-			MinValue._utc = new DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			MinValue.UtcDate = new DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 			MinValue._local = new DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Local);
-			MinValue._stdoff = TimeSpan.Zero;
-			MinValue._gmtoff = TimeSpan.Zero;
+			MinValue.StandardOffset = TimeSpan.Zero;
+			MinValue.GmtOffset = TimeSpan.Zero;
 
 			MaxValue = new TzTimeZoneRuleDate();
-			MaxValue._utc = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Utc);
+			MaxValue.UtcDate = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Utc);
 			MaxValue._local = new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Local);
-			MaxValue._stdoff = TimeSpan.Zero;
-			MaxValue._gmtoff = TimeSpan.Zero;
+			MaxValue.StandardOffset = TimeSpan.Zero;
+			MaxValue.GmtOffset = TimeSpan.Zero;
 		}
 
-		private DateTime _utc;
-		private DateTime _local;
-		private TimeSpan _stdoff;
-		private TimeSpan _gmtoff;
+        private DateTime _local;
 
-		public DateTime UtcDate { get { return _utc; } }
+        /// <summary>
+        /// Gets the utc date of current instance
+        /// </summary>
+        public DateTime UtcDate { get; private set; }
 
-		public TimeSpan StandardOffset { get { return _stdoff; } }
+        /// <summary>
+        /// Gets the standard offset applicable to current instance
+        /// </summary>
+        public TimeSpan StandardOffset { get; private set; }
 
-		public TimeSpan GmtOffset { get { return _gmtoff; } }
+        /// <summary>
+        /// Gets gmt offset applicable to current instance
+        /// </summary>
+        public TimeSpan GmtOffset { get; private set; }
 
         /// <summary>
         /// Initialize a new instance of <see cref="TzTimeZoneRuleDate"/>
@@ -47,14 +53,14 @@ namespace Afk.ZoneInfo
 		public TzTimeZoneRuleDate(DateTime dateTime, TimeSpan gmtOffset, TimeSpan standardOffset) {
 			if (dateTime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "dateTime");
 
-			_stdoff = standardOffset; _gmtoff = gmtOffset;
+			StandardOffset = standardOffset; GmtOffset = gmtOffset;
 			if (dateTime.Kind == DateTimeKind.Local) {
 				_local = dateTime;
-				_utc = TzUtilities.GetDateTime(_local, _gmtoff, _stdoff, DateTimeKind.Utc);
+				UtcDate = TzUtilities.GetDateTime(_local, GmtOffset, StandardOffset, DateTimeKind.Utc);
 			}
 			else {
-				_utc = dateTime;
-				_local = TzUtilities.GetDateTime(_utc, _gmtoff, _stdoff, DateTimeKind.Local);
+				UtcDate = dateTime;
+				_local = TzUtilities.GetDateTime(UtcDate, GmtOffset, StandardOffset, DateTimeKind.Local);
 			}
 		}
 
@@ -69,10 +75,13 @@ namespace Afk.ZoneInfo
 			if (utc.Kind != DateTimeKind.Utc) throw new ArgumentException("Datetime kind utc expected", "utc");
 			if (local.Kind != DateTimeKind.Local) throw new ArgumentException("Datetime kind local expected", "local");
 
-			_stdoff = standardOffset; _gmtoff = gmtOffset;
-			_utc = utc; _local = local;
+			StandardOffset = standardOffset; GmtOffset = gmtOffset;
+			UtcDate = utc; _local = local;
 		}
 
+        /// <summary>
+        /// Initialize a new instance of <see cref="TzTimeZoneRuleDate"/>
+        /// </summary>
 		private TzTimeZoneRuleDate() {
 		}
 
@@ -83,14 +92,14 @@ namespace Afk.ZoneInfo
 		public DateTime ToLocalTime() {
 			return _local;
 		}
-
-		/// <summary>
-		/// Détermine si un <see cref="TzTimeZoneRuleDate"/> spécifié est inférieur à un autre <see cref="TzTimeZoneRuleDate"/> spécifié
-		/// </summary>
-		/// <param name="date1"></param>
-		/// <param name="date2"></param>
-		/// <returns></returns>
-		public static bool operator<(TzTimeZoneRuleDate date1, TzTimeZoneRuleDate date2) {
+        
+        /// <summary>
+        /// Détermine si un <see cref="TzTimeZoneRuleDate"/> spécifié est inférieur à un autre <see cref="TzTimeZoneRuleDate"/> spécifié
+        /// </summary>
+        /// <param name="date1"></param>
+        /// <param name="date2"></param>
+        /// <returns></returns>
+        public static bool operator<(TzTimeZoneRuleDate date1, TzTimeZoneRuleDate date2) {
 			return (date1.UtcDate < date2.UtcDate) && (date1._local < date2._local);
 		}
 
@@ -144,7 +153,7 @@ namespace Afk.ZoneInfo
 			return Op(date2, date1, method);
 		}
 
-		private static bool Op(DateTime date1, TzTimeZoneRuleDate date2, Func<DateTime, DateTime, bool> func) {
+        private static bool Op(DateTime date1, TzTimeZoneRuleDate date2, Func<DateTime, DateTime, bool> func) {
 			if (date2 == null)
 				throw new ArgumentNullException("date2");
 
@@ -154,7 +163,7 @@ namespace Afk.ZoneInfo
 			if (date1.Kind == DateTimeKind.Local)
 				return func(date1, date2._local);
 
-			return func(date1, date2._utc);
+			return func(date1, date2.UtcDate);
 		}
 	}
 }

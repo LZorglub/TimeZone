@@ -275,6 +275,12 @@ namespace Afk.ZoneInfo
 
             if (datetime.Kind == DateTimeKind.Utc) return datetime;
 
+            // Check that local date is cover by zone
+            if (!ZoneRules.Any(z => datetime >= z.StartZone.ToLocalTime() && datetime < z.EndZone.ToLocalTime()))
+            {
+                throw new ArgumentOutOfRangeException(nameof(datetime));
+            }
+
             if (optimize)
             {
                 UpdateDateChange(datetime.Year);
@@ -295,7 +301,7 @@ namespace Afk.ZoneInfo
 
             TimeSpan gmtOffset = zr.zoneRule.GmtOffset;
 
-            DateTime utcclock = datetime.Add(-gmtOffset).Add(-zr.standardOffset);
+            DateTime utcclock = datetime.Add(-gmtOffset-zr.standardOffset);
             return new DateTime(utcclock.Ticks, DateTimeKind.Utc);
         }
 
@@ -367,7 +373,6 @@ namespace Afk.ZoneInfo
             ZoneRuleAssociate za = new ZoneRuleAssociate();
             za.standardOffset = TimeSpan.Zero;
 
-            TimeSpan gmtoff = TimeSpan.Zero;
             TimeSpan stdoff = TimeSpan.Zero;
 
             bool utc = (point.Kind == DateTimeKind.Utc);
@@ -383,7 +388,6 @@ namespace Afk.ZoneInfo
             for (int index = ZoneRules.Count - 1; index >= 0; index--)
             {
                 TzTimeZoneRule temp = ZoneRules[index];
-                gmtoff = temp.GmtOffset;
 
                 DateTime startTime = (utc) ? temp.StartZone.UtcDate : temp.StartZone.ToLocalTime();
                 DateTime endTime = (utc) ? temp.EndZone.UtcDate : temp.EndZone.ToLocalTime();
@@ -401,7 +405,7 @@ namespace Afk.ZoneInfo
                     else
                     {
                         // Trouver la dernière règle applicable au point
-                        Rule lastRule = GetLastStandardOffset(TzTimeInfo.Rules[temp.RuleName], rulePoint, temp.StartZone, temp.GmtOffset);
+                        Rule lastRule = GetLastStandardOffset(TzTimeInfo.Rules[temp.RuleName], rulePoint, temp.StartZone, temp.GmtOffset, RuleSearchKind.LessThanOrEqual);
 
                         za.zoneRule = temp;
                         za.standardOffset = (lastRule == null) ? stdoff : lastRule.StandardOffset;
@@ -417,11 +421,13 @@ namespace Afk.ZoneInfo
         /// Obtient la règle applicable à un point
         /// </summary>
         /// <param name="rules">Ensemble des règles à parcourir</param>
-        /// <param name="date"><see cref="TzTimeZoneRuleUntil"/> représentant la date du ponit</param>
+        /// <param name="date"><see cref="TzTimeZoneRuleUntil"/> représentant la date du point</param>
         /// <param name="startZone">Limite inférieure de validité des règles</param>
         /// <param name="gmtOffset"></param>
+        /// <param name="ruleSearch">Indique si on recherche une régle inférieure ou égal au point</param>
         /// <returns></returns>
-        internal static Rule GetLastStandardOffset(List<Rule> rules, TzTimeZoneRuleUntil date, TzTimeZoneRuleDate startZone, TimeSpan gmtOffset)
+        internal static Rule GetLastStandardOffset(List<Rule> rules, TzTimeZoneRuleUntil date, TzTimeZoneRuleDate startZone, TimeSpan gmtOffset,
+            RuleSearchKind ruleSearch)
         {
             Rule lastRule = null;
             TimeSpan range = TimeSpan.MaxValue;
@@ -524,9 +530,11 @@ namespace Afk.ZoneInfo
                         continue;
                     }
 
-                    // Si la règle est comprise dans les bornes [startTimeZone, dateTime] alors elle
+                    // Si la règle est comprise dans les bornes [startTimeZone, dateTime] ou [startTimeZone, dateTime[ alors elle
                     // est applicable, on la retient si elle est meilleure que celle déjà retenue.
-                    if (ruleTime >= startTimeZone && dateTime >= ruleTime)
+                    if (ruleTime >= startTimeZone && 
+                        ((ruleTime <= dateTime && ruleSearch == RuleSearchKind.LessThanOrEqual) ||
+                        (ruleTime < dateTime && ruleSearch == RuleSearchKind.LessThan)))
                     {
                         TimeSpan diff = dateTime - ruleTime;
                         if (range > diff)
@@ -541,6 +549,74 @@ namespace Afk.ZoneInfo
             }
 
             return lastRule;
+        }
+
+        /// <summary>
+        /// Obtient une règle correspond à la date spécifiée
+        /// </summary>
+        /// <param name="rules"></param>
+        /// <param name="date"></param>
+        /// <param name="gmtOffset"></param>
+        /// <param name="standardOffset"></param>
+        /// <returns></returns>
+        internal static Rule GetRuleAtPoint(List<Rule> rules, DateTime date, TimeSpan gmtOffset, TimeSpan standardOffset)
+        {
+            if (date.Kind != DateTimeKind.Utc) throw new ArgumentNullException(nameof(date));
+
+            DateTime ruleTime = DateTime.MinValue;
+            int yref = 0;
+
+            // On parcourt toutes les règles car rien ne nous assure quelles sont dans un ordre spécifique
+            for (int i = rules.Count - 1; i >= 0; i--)
+            {
+                Rule rule = rules[i];
+
+                // Certaines règles sont déclenchées le 1er janvier de l'année, avec le décalage
+                // GMT on peut se retrouver dans le cas LowerYear = date.Year+1.
+                // Exemple : je cherche la règle applicable le 31 décembre 2010 23:00 utc, si on est sur une règle
+                // applicable le 1 janvier 2011 local alors le décalage gmt peut faire en sorte que la règle soit retenue
+                if (rule.LowerYear == date.Year + 1 && rule.Month == 1 && date.Month == 12 && rule.AtKind != TimeKind.UniversalTime)
+                {
+                    yref = rule.LowerYear;
+                }
+                else
+                {
+                    // Année de début supérieure au point recherché, la règle n'est pas applicable
+                    if (rule.LowerYear > date.Year) continue;
+
+                    yref = (rule.HighYear > date.Year) ? date.Year : rule.HighYear;
+
+                    // Cas particulier des changements à cheval sur deux années
+                    // Si les dates à comparer ne sont pas de même kind la règle applicable en année N
+                    // peut se retrouver applicable en N-1
+                    if (yref < rule.HighYear && rule.AtKind != TimeKind.UniversalTime)
+                    {
+                        if (rule.Month == 1 && date.Month == 12) yref++;
+                    }
+
+                    // On recherche un changement d'heure à la date spécifiée, on peut donc éliminer les années outscope
+                    if (yref < date.Year - 1) continue;
+                }
+
+                for (; yref >= rule.LowerYear; yref--)
+                {
+                    if (!TzUtilities.IsYearType(yref, rule.YearType)) continue;
+
+                    // Pas la peine de rechercher une année antérieure au point
+                    if (yref < date.Year - 1) break;
+
+                    // On compare toujours en UTC
+                    ruleTime = TzUtilities.GetDateTime(rule, yref, gmtOffset, standardOffset, DateTimeKind.Utc);
+
+                    // Si la date d'application de la règle est égale au point recherché alors on retourne la règle
+                    if (ruleTime == date)
+                    {
+                        return rule;
+                    }
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -661,6 +737,7 @@ namespace Afk.ZoneInfo
             return milliseconds - UnixEpochMilliseconds;
         }
         #endregion
+        
         /*
         /// <summary>
         /// Retrieves an array of <see cref="TzAdjustmentRule"/> objects that apply to the current <see cref="TzTimeZone"/> object.

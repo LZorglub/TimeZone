@@ -4,8 +4,8 @@
 #
 # From Luc Nempont (2010-07-07)
 # Source : CLDR Charts
-# Web address : http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/zone_tzid.html
-#
+# Web address : http://unicode.org/cldr/charts/32/supplemental/zone_tzid.html
+# Xml : http://unicode.org/repos/cldr/trunk/common/supplemental/windowsZones.xml
 
 Africa/Abidjan Greenwich Standard Time
 Africa/Accra Greenwich Standard Time

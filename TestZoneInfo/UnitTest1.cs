@@ -58,8 +58,11 @@ namespace TestZoneInfo
         //
         #endregion
 
-        [TestMethod]
-        public void TestYear2000()
+        [DataTestMethod]
+        [DataRow(false, DisplayName = "No prefetch")]
+        [DataRow(true, DisplayName = "Prefetch")]
+        
+        public void TestYear2000(bool prefetch)
         {
             DateTime utc = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -72,7 +75,7 @@ namespace TestZoneInfo
             while (utc.Year == 2000)
             {
                 var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, parisZone);
-                var localZoneInfo = zoneInfo.ToLocalTime(utc);
+                var localZoneInfo = zoneInfo.ToLocalTime(utc, prefetch);
 
                 Assert.AreEqual(localWindows, localZoneInfo);
 
@@ -105,34 +108,6 @@ namespace TestZoneInfo
         }
 
         [TestMethod]
-        public void TestSamoa2011()
-        {
-            // Refer to https://en.wikipedia.org/wiki/Time_in_Samoa for explanation
-            // The 30th december 2011 dont exists
-            DateTime utc = new DateTime(2011, 12, 28, 0, 0, 0, DateTimeKind.Utc);
-
-            // windows
-            TimeZoneInfo samoaZone = TimeZoneInfo.FindSystemTimeZoneById("Samoa Standard Time");
-
-            // ZoneInfo
-            var zoneInfo = TzTimeInfo.FindSystemTzTimeZoneById("Samoa Standard Time");
-
-            while (utc.Year <= 2012)
-            {
-                var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, samoaZone);
-                var localZoneInfo = zoneInfo.ToLocalTime(utc);
-
-                // Windows fails on the 30th
-                if (localWindows.Day == 30 && localZoneInfo.Day == 31)
-                {
-                    break;
-                }
-                Assert.AreEqual(localWindows, localZoneInfo);
-                utc = utc.AddHours(1);
-            }
-        }
-
-        [TestMethod]
         public void TestTicks()
         {
             var zone = TzTimeInfo.GetZones().Single(z => z.Name == "America/Argentina/Buenos_Aires");
@@ -150,5 +125,49 @@ namespace TestZoneInfo
                 Assert.AreEqual(expected, actual);
             }
         }
+
+        [DataTestMethod]
+        [DataRow("Europe/Paris", DisplayName = "France")]
+        [DataRow("America/Grand_Turk", DisplayName = "Grand Turk")]
+        public void TestPrefetch(string zoneName)
+        {
+            var zone = TzTimeInfo.GetZones().Single(z => z.Name == zoneName);
+
+            var start = new DateTime(2015, 01, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            while (start.Year < 2020)
+            {
+                start = start.AddHours(1);
+                DateTime d1 = zone.ToLocalTime(start, false);
+                DateTime d2 = zone.ToLocalTime(start, true);
+                Assert.AreEqual(d1, d2);
+            }
+        }
+
+        [TestMethod]
+        public void TestGrandTruk()
+        {
+            DateTime utc = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
+
+            // windows
+            TimeZoneInfo turkCaico = TimeZoneInfo.FindSystemTimeZoneById("Turks And Caicos Standard Time");
+
+            // ZoneInfo
+            var zoneInfo = TzTimeInfo.GetZones().Single(z => z.Name == "America/Grand_Turk");
+            //var zoneInfo = TzTimeInfo.FindSystemTzTimeZoneById("Turks And Caicos Standard Time");
+            //Assert.AreEqual(zoneInfo.Name, "America/Grand_Turk");
+
+            while (utc.Year <= 2020)
+            {
+                var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, turkCaico);
+                var localZoneInfo = zoneInfo.ToLocalTime(utc, false);
+
+                Assert.AreEqual(localWindows, localZoneInfo);
+                utc = utc.AddHours(1);
+            }
+        }
+
+        // TODO Rule Port (Europe) with changes the 29 Feb
+
     }
 }
