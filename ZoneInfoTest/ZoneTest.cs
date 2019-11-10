@@ -1,67 +1,19 @@
 ﻿using Afk.ZoneInfo;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using Xunit;
 
-namespace TestZoneInfo
+namespace ZoneInfoTest
 {
-    /// <summary>
-    /// Description résumée pour UnitTest1
-    /// </summary>
-    [TestClass]
-    public class UnitTest1
+    public class ZoneTest
     {
-        public UnitTest1()
-        {
-            //
-            // TODO: ajoutez ici la logique du constructeur
-            //
-        }
-
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Obtient ou définit le contexte de test qui fournit
-        ///des informations sur la série de tests active ainsi que ses fonctionnalités.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        #region Attributs de tests supplémentaires
-        //
-        // Vous pouvez utiliser les attributs supplémentaires suivants lorsque vous écrivez vos tests :
-        //
-        // Utilisez ClassInitialize pour exécuter du code avant d'exécuter le premier test de la classe
-        // [ClassInitialize()]
-        // public static void MyClassInitialize(TestContext testContext) { }
-        //
-        // Utilisez ClassCleanup pour exécuter du code une fois que tous les tests d'une classe ont été exécutés
-        // [ClassCleanup()]
-        // public static void MyClassCleanup() { }
-        //
-        // Utilisez TestInitialize pour exécuter du code avant d'exécuter chaque test 
-        // [TestInitialize()]
-        // public void MyTestInitialize() { }
-        //
-        // Utilisez TestCleanup pour exécuter du code après que chaque test a été exécuté
-        // [TestCleanup()]
-        // public void MyTestCleanup() { }
-        //
-        #endregion
-
+        /*
         [DataTestMethod]
         [DataRow(false, DisplayName = "No prefetch")]
         [DataRow(true, DisplayName = "Prefetch")]
-        
+
         public void TestYear2000(bool prefetch)
         {
             DateTime utc = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -142,9 +94,9 @@ namespace TestZoneInfo
                 DateTime d2 = zone.ToLocalTime(start, true);
                 Assert.AreEqual(d1, d2);
             }
-        }
+        }*/
 
-        [TestMethod]
+        [Fact]
         public void TestGrandTruk()
         {
             DateTime utc = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
@@ -162,12 +114,9 @@ namespace TestZoneInfo
                 var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, turkCaico);
                 var localZoneInfo = zoneInfo.ToLocalTime(utc, false);
 
-                Assert.AreEqual(localWindows, localZoneInfo);
+                Assert.Equal(localWindows, localZoneInfo);
                 utc = utc.AddHours(1);
             }
         }
-
-        // TODO Rule Port (Europe) with changes the 29 Feb
-
     }
 }

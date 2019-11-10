@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace Afk.ZoneInfo
@@ -124,7 +125,9 @@ namespace Afk.ZoneInfo
 
                                 // La règle n'est pas applicable en prenant l'année courante mais peut le devenir si
                                 // on est à cheval sur deux années. Année N-1 et règle en décembre ou année N+1 et règle en Janvier
+#pragma warning disable CA1814 // Préférer les tableaux en escalier aux tableaux multidimensionnels
                                 int[,] yrefs = { { year - 1, 12 }, { year + 1, 1 } };
+#pragma warning restore CA1814 // Préférer les tableaux en escalier aux tableaux multidimensionnels
                                 for (int y = 0; y < yrefs.GetLength(0); y++)
                                 {
                                     if (rule.LowerYear <= yrefs[y, 0] && rule.HighYear >= yrefs[y, 0] && rule.Month == yrefs[y, 1] && TzUtilities.IsYearType(yrefs[y, 0], rule.YearType))
@@ -235,7 +238,7 @@ namespace Afk.ZoneInfo
         /// <returns>A <see cref="System.DateTime"/> object whose value is the local time that corresponds to time.</returns>
         public DateTime ToLocalTime(DateTime datetime, bool optimize = false)
         {
-            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
+            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", nameof(datetime));
 
             if (datetime.Kind == DateTimeKind.Local) return datetime;
 
@@ -243,7 +246,7 @@ namespace Afk.ZoneInfo
             {
                 UpdateDateChange(datetime.Year);
                 List<TzTimeZoneRuleDate> knownDate = _zoneDates[datetime.Year];
-                if (knownDate.Count() > 0)
+                if (knownDate.Any())
                 {
                     foreach (var elt in knownDate)
                     {
@@ -271,7 +274,7 @@ namespace Afk.ZoneInfo
         /// <returns>A <see cref="DateTime"/> object whose value is the Coordinated Universal Time (UTC) that corresponds to time.</returns>
         public DateTime ToUniversalTime(DateTime datetime, bool optimize = false)
         {
-            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
+            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", nameof(datetime));
 
             if (datetime.Kind == DateTimeKind.Utc) return datetime;
 
@@ -285,7 +288,7 @@ namespace Afk.ZoneInfo
             {
                 UpdateDateChange(datetime.Year);
                 List<TzTimeZoneRuleDate> knownDate = _zoneDates[datetime.Year];
-                if (knownDate.Count() > 0)
+                if (knownDate.Any())
                 {
                     foreach (var elt in knownDate)
                     {
@@ -301,7 +304,7 @@ namespace Afk.ZoneInfo
 
             TimeSpan gmtOffset = zr.zoneRule.GmtOffset;
 
-            DateTime utcclock = datetime.Add(-gmtOffset-zr.standardOffset);
+            DateTime utcclock = datetime.Add(-gmtOffset - zr.standardOffset);
             return new DateTime(utcclock.Ticks, DateTimeKind.Utc);
         }
 
@@ -313,7 +316,8 @@ namespace Afk.ZoneInfo
         /// <returns>A local <see cref="DateTime"/> in the specified time zone.</returns>
         public DateTime ToTimeZone(DateTime datetime, TzTimeZone zone)
         {
-            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
+            if (zone == null) throw new ArgumentNullException(nameof(zone));
+            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", nameof(datetime));
 
             if (datetime.Kind == DateTimeKind.Utc) return datetime;
 
@@ -329,9 +333,10 @@ namespace Afk.ZoneInfo
         /// <returns>A string that represents the <see cref="DateTime"/> in the specified format.</returns>
         public string ToString(string format, DateTime datetime)
         {
-            if (datetime == null) throw new ArgumentNullException("datetime");
+            if (format == null) throw new ArgumentNullException(nameof(format));
+            if (datetime == null) throw new ArgumentNullException(nameof(datetime));
 
-            if (datetime.Kind == DateTimeKind.Unspecified) return datetime.ToString(format);
+            if (datetime.Kind == DateTimeKind.Unspecified) return datetime.ToString(format, CultureInfo.CurrentCulture);
 
             if (format == "o" || format == "O")
                 format = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
@@ -346,19 +351,19 @@ namespace Afk.ZoneInfo
                 Debug.Assert(zr.zoneRule != null);
 
                 TimeSpan eps = zr.zoneRule.GmtOffset + zr.standardOffset;
-                string epss = string.Format("{0:00}:{1:00}", eps.Hours, eps.Minutes);
+                string epss = string.Format(CultureInfo.InvariantCulture, "{0:00}:{1:00}", eps.Hours, eps.Minutes);
                 if (eps >= TimeSpan.Zero) epss = "+" + epss;
 
-                string result = format.Replace("#F", string.Format(zr.zoneRule.Format.Replace("%s", "{0}"), (zr.Letter == "-") ? "" : zr.Letter));
+                string result = format.Replace("#F", string.Format(CultureInfo.InvariantCulture, zr.zoneRule.Format.Replace("%s", "{0}"), (zr.Letter == "-") ? "" : zr.Letter));
                 if (datetime.Kind == DateTimeKind.Utc)
                     result = result.Replace("K", "Z").Replace("zzz", "Z");
                 else
                     result = result.Replace("K", epss).Replace("zzz", epss);
 
-                return datetime.ToString(result);
+                return datetime.ToString(result, CultureInfo.CurrentCulture);
             }
 
-            return datetime.ToString(format);
+            return datetime.ToString(format, CultureInfo.CurrentCulture);
         }
 
         /// <summary>
@@ -368,7 +373,7 @@ namespace Afk.ZoneInfo
         /// <returns><see cref="ZoneRuleAssociate"/> contenant le <see cref="DateTime"/> spécifié</returns>
         private ZoneRuleAssociate GetZoneRule(DateTime point)
         {
-            if (point.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "point");
+            if (point.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", nameof(point));
 
             ZoneRuleAssociate za = new ZoneRuleAssociate();
             za.standardOffset = TimeSpan.Zero;
@@ -532,7 +537,7 @@ namespace Afk.ZoneInfo
 
                     // Si la règle est comprise dans les bornes [startTimeZone, dateTime] ou [startTimeZone, dateTime[ alors elle
                     // est applicable, on la retient si elle est meilleure que celle déjà retenue.
-                    if (ruleTime >= startTimeZone && 
+                    if (ruleTime >= startTimeZone &&
                         ((ruleTime <= dateTime && ruleSearch == RuleSearchKind.LessThanOrEqual) ||
                         (ruleTime < dateTime && ruleSearch == RuleSearchKind.LessThan)))
                     {
@@ -717,7 +722,7 @@ namespace Afk.ZoneInfo
         /// <returns></returns>
         public long ToUnixTimeSeconds(DateTime datetime)
         {
-            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
+            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", nameof(datetime));
             DateTime d = (datetime.Kind == DateTimeKind.Utc) ? datetime : ToUniversalTime(datetime);
 
             long seconds = d.Ticks / TimeSpan.TicksPerSecond;
@@ -730,14 +735,14 @@ namespace Afk.ZoneInfo
         /// <returns></returns>
         public long ToUnixTimeMilliseconds(DateTime datetime)
         {
-            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", "datetime");
+            if (datetime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("Unspecified date time kind", nameof(datetime));
             DateTime d = (datetime.Kind == DateTimeKind.Utc) ? datetime : ToUniversalTime(datetime);
 
             long milliseconds = d.Ticks / TimeSpan.TicksPerMillisecond;
             return milliseconds - UnixEpochMilliseconds;
         }
         #endregion
-        
+
         /*
         /// <summary>
         /// Retrieves an array of <see cref="TzAdjustmentRule"/> objects that apply to the current <see cref="TzTimeZone"/> object.

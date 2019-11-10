@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Afk.ZoneInfo
 {
     /// <summary>
     /// Xml date conversion
     /// </summary>
-    public class XmlTzConvert
+    public static class XmlTzConvert
     {
         private static System.Text.RegularExpressions.Regex dateRegex = new System.Text.RegularExpressions.Regex(
             @"^(?<YEAR>\d{4})\x2D(?<MONTH>\d{2})\x2D(?<DAY>\d{2})T(?<HOUR>\d{2}):(?<MINUTE>\d{2}):(?<SEC>\d{2})(?:.(?<MS>\d{1,3}))?(?:(?<UTC>Z)|(?<SGN>[+|-])(?<SH>\d{2}):(?<SM>\d{2}))?$",
@@ -20,19 +21,22 @@ namespace Afk.ZoneInfo
         /// <returns></returns>
         public static DateTime ToDateTime(string s, TzTimeZone timeZone, DateTimeKind dateTimeKind)
         {
-            if (string.IsNullOrEmpty(s)) throw new ArgumentException(nameof(s));
+            if (string.IsNullOrEmpty(s)) throw new ArgumentNullException(nameof(s));
             if (timeZone == null) throw new ArgumentNullException(nameof(timeZone));
-            if (dateTimeKind == DateTimeKind.Unspecified) throw new ArgumentException(nameof(dateTimeKind));
+            if (dateTimeKind == DateTimeKind.Unspecified) throw new ArgumentException("Datetime kind unspecified", nameof(dateTimeKind));
 
             System.Text.RegularExpressions.Match m = dateRegex.Match(s);
             if (m.Success)
             {
-                DateTime result = new DateTime(Convert.ToInt32(m.Groups["YEAR"].Value), Convert.ToInt32(m.Groups["MONTH"].Value),
-                    Convert.ToInt32(m.Groups["DAY"].Value), Convert.ToInt32(m.Groups["HOUR"].Value), Convert.ToInt32(m.Groups["MINUTE"].Value),
-                    Convert.ToInt32(m.Groups["SEC"].Value), DateTimeKind.Local);
+                DateTime result = new DateTime(Convert.ToInt32(m.Groups["YEAR"].Value, CultureInfo.InvariantCulture),
+                    Convert.ToInt32(m.Groups["MONTH"].Value, CultureInfo.InvariantCulture),
+                    Convert.ToInt32(m.Groups["DAY"].Value, CultureInfo.InvariantCulture),
+                    Convert.ToInt32(m.Groups["HOUR"].Value, CultureInfo.InvariantCulture),
+                    Convert.ToInt32(m.Groups["MINUTE"].Value, CultureInfo.InvariantCulture),
+                    Convert.ToInt32(m.Groups["SEC"].Value, CultureInfo.InvariantCulture), DateTimeKind.Local);
                 if (m.Groups["MS"].Success)
                 {
-                    result = result.AddMilliseconds(Convert.ToInt32(m.Groups["MS"]));
+                    result = result.AddMilliseconds(Convert.ToInt32(m.Groups["MS"], CultureInfo.InvariantCulture));
                 }
 
                 // Date is local, check return 
@@ -43,15 +47,18 @@ namespace Afk.ZoneInfo
                     else
                         return timeZone.ToLocalTime(DateTime.SpecifyKind(result, DateTimeKind.Utc));
                 }
-                else {
+                else
+                {
                     // Date string is local, check offset
                     if (m.Groups["SGN"].Success)
                     {
                         // Translate in utc
                         if (m.Groups["SGN"].Value == "+")
-                            result = result.AddHours(-Convert.ToInt32(m.Groups["SH"].Value)).AddMinutes(-Convert.ToInt32(m.Groups["SM"].Value));
+                            result = result.AddHours(-Convert.ToInt32(m.Groups["SH"].Value, CultureInfo.InvariantCulture))
+                                .AddMinutes(-Convert.ToInt32(m.Groups["SM"].Value, CultureInfo.InvariantCulture));
                         else
-                            result = result.AddHours(Convert.ToInt32(m.Groups["SH"].Value)).AddMinutes(Convert.ToInt32(m.Groups["SM"].Value));
+                            result = result.AddHours(Convert.ToInt32(m.Groups["SH"].Value, CultureInfo.InvariantCulture))
+                                .AddMinutes(Convert.ToInt32(m.Groups["SM"].Value, CultureInfo.InvariantCulture));
 
                         if (dateTimeKind == DateTimeKind.Utc)
                             return DateTime.SpecifyKind(result, DateTimeKind.Utc);
@@ -69,7 +76,7 @@ namespace Afk.ZoneInfo
                 }
             }
 
-            throw new ArgumentException(string.Format("{0} is not a valid format", s));
+            throw new ArgumentException($"{s} is an invalid format");
         }
     }
 }

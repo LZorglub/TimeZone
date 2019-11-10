@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Afk.ZoneInfo;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using Afk.ZoneInfo;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
 
-namespace TestZoneInfo
+namespace ZoneInfoTest
 {
-    [TestClass]
     public class AzoresTest
     {
-        [TestMethod]
+        [Fact]
         public void Test1920()
         {
             DateTime local = new DateTime(1920, 02, 29, 21, 0, 0, DateTimeKind.Local);
@@ -16,15 +18,15 @@ namespace TestZoneInfo
 
             var zoneInfo = TzTimeInfo.GetZones().Single(z => z.Name == "Atlantic/Azores");
 
-            Assert.AreEqual(utc, zoneInfo.ToUniversalTime(local, true));
+            Assert.Equal(utc, zoneInfo.ToUniversalTime(local, true));
 
             local = local.AddHours(1);
             utc = utc.AddHours(1);
-            Assert.AreEqual(utc, zoneInfo.ToUniversalTime(local, true));
+            Assert.Equal(utc, zoneInfo.ToUniversalTime(local, true));
 
             local = local.AddHours(2); // DST Changes
             utc = utc.AddHours(1);
-            Assert.AreEqual(utc, zoneInfo.ToUniversalTime(local, true));
+            Assert.Equal(utc, zoneInfo.ToUniversalTime(local, true));
         }
     }
 }

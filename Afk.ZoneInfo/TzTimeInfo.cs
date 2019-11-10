@@ -24,10 +24,12 @@ namespace Afk.ZoneInfo
         private static List<KeyValuePair<string, string>> _mappingWindowsTZID;
 
         #region Constructeur
+#pragma warning disable CA1810 // Initialisez les champs static de type référence inline
         /// <summary>
         /// Initializes a new instance of the <see cref="TzTimeInfo"/> class.
         /// </summary>
         static TzTimeInfo()
+#pragma warning restore CA1810 // Initialisez les champs static de type référence inline
         {
             _links = new Dictionary<string, string>();
             _countryCode = new List<Country>();
@@ -71,7 +73,7 @@ namespace Afk.ZoneInfo
 
             foreach (string resource in resnames)
             {
-                if (resource.StartsWith("Afk.ZoneInfo.data."))
+                if (resource.StartsWith("Afk.ZoneInfo.data.", StringComparison.InvariantCulture))
                 {
                     string[] parts = resource.Split(new char[] { '.' }, 4);
                     if (parts.Length == 4)
@@ -85,15 +87,15 @@ namespace Afk.ZoneInfo
                                 {
                                     LoadFile(reader, parts[3]);
                                 }
-                                else if (string.Compare(Path.GetFileName(parts[3]), "iso3166.tab", true) == 0)
+                                else if (string.Compare(Path.GetFileName(parts[3]), "iso3166.tab", StringComparison.InvariantCultureIgnoreCase) == 0)
                                 {
                                     LoadCountryCode(reader);
                                 }
-                                else if (string.Compare(Path.GetFileName(parts[3]), "zone1970.tab", true) == 0)
+                                else if (string.Compare(Path.GetFileName(parts[3]), "zone1970.tab", StringComparison.InvariantCultureIgnoreCase) == 0)
                                 {
                                     LoadZoneName(reader);
                                 }
-                                else if (string.Compare(Path.GetFileName(parts[3]), "windowsZones.tab", true) == 0)
+                                else if (string.Compare(Path.GetFileName(parts[3]), "windowsZones.tab", StringComparison.InvariantCultureIgnoreCase) == 0)
                                 {
                                     LoadMappingZones(reader);
                                 }
@@ -111,7 +113,7 @@ namespace Afk.ZoneInfo
         private static void LoadDirectory(string directory)
         {
             if (string.IsNullOrEmpty(directory))
-                throw new ArgumentNullException("directory");
+                throw new ArgumentNullException(nameof(directory));
 
             string[] files = Directory.GetFiles(directory);
 
@@ -123,11 +125,11 @@ namespace Afk.ZoneInfo
                     {
                         if (string.IsNullOrEmpty(Path.GetExtension(file)))
                             LoadFile(reader, file);
-                        else if (string.Compare(Path.GetFileName(file), "iso3166.tab", true) == 0)
+                        else if (string.Compare(Path.GetFileName(file), "iso3166.tab", StringComparison.InvariantCultureIgnoreCase) == 0)
                             LoadCountryCode(reader);
-                        else if (string.Compare(Path.GetFileName(file), "zone1970.tab", true) == 0)
+                        else if (string.Compare(Path.GetFileName(file), "zone1970.tab", StringComparison.InvariantCultureIgnoreCase) == 0)
                             LoadZoneName(reader);
-                        else if (string.Compare(Path.GetFileName(file), "windowsZones.tab", true) == 0)
+                        else if (string.Compare(Path.GetFileName(file), "windowsZones.tab", StringComparison.InvariantCultureIgnoreCase) == 0)
                         {
                             LoadMappingZones(reader);
                         }
@@ -156,8 +158,8 @@ namespace Afk.ZoneInfo
         /// <param name="filename"></param>
         private static void LoadFile(TextReader reader, string filename)
         {
-            if (reader == null)
-                throw new ArgumentNullException("reader");
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            if (filename == null) throw new ArgumentNullException(nameof(filename));
 
             string line = null;
 
@@ -221,7 +223,7 @@ namespace Afk.ZoneInfo
         private static void LoadCountryCode(TextReader reader)
         {
             if (reader == null)
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
 
             string line = null;
 
@@ -251,7 +253,7 @@ namespace Afk.ZoneInfo
         private static void LoadZoneName(TextReader reader)
         {
             if (reader == null)
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
 
             string line = null;
 
@@ -287,7 +289,7 @@ namespace Afk.ZoneInfo
         private static void LoadMappingZones(TextReader reader)
         {
             if (reader == null)
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
 
             string line = null;
 
@@ -467,7 +469,7 @@ namespace Afk.ZoneInfo
         /// <returns>An <see cref="TzTimeZone"/> object whose name is the value of the zoneName parameter, null otherwise</returns>
         public static TzTimeZone GetZone(string zoneName)
         {
-            if (string.IsNullOrEmpty(zoneName)) throw new ArgumentNullException("zoneName");
+            if (string.IsNullOrEmpty(zoneName)) throw new ArgumentNullException(nameof(zoneName));
 
             if (_zones.ContainsKey(zoneName))
                 return _zones[zoneName];
@@ -494,8 +496,7 @@ namespace Afk.ZoneInfo
         /// <returns>An <see cref="TzTimeZone"/> object whose windows identifier is the value of the id parameter, otherwise null.</returns>
         public static TzTimeZone FindSystemTzTimeZoneById(string id)
         {
-            if (string.IsNullOrEmpty(id))
-                throw new ArgumentException("id");
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
             foreach (var keys in _mappingWindowsTZID)
             {

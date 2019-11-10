@@ -1,0 +1,2830 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Afk.ZoneInfo</name>
+    </assembly>
+    <members>
+        <member name="T:Afk.ZoneInfo.Country">
+            <summary>
+            Represents a country. 
+            </summary>
+            <remarks>There are one or more time zone under a country.</remarks>
+            <example>This sample list all the time zone for the US country :
+            <code>
+            Country country = TzTimeInfo.GetCountry("US");
+            foreach (string tz in country.TZ)
+            	Console.WriteLine(tz);
+            </code>
+            </example>
+        </member>
+        <member name="M:Afk.ZoneInfo.Country.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:Afk.ZoneInfo.Country"/>
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Country.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:Afk.ZoneInfo.Country"/>
+            </summary>
+            <param name="code">Country code</param>
+        </member>
+        <member name="P:Afk.ZoneInfo.Country.Name">
+            <summary>
+            Gets the name of country
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Country.Code">
+            <summary>
+            Gets the ISO 3166-1 code of country
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Country.TZ">
+            <summary>
+            Gets the list of time zone name
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Country.AddTZ(System.String,System.String,System.String)">
+            <summary>
+            Add a new zone to the country
+            </summary>
+            <param name="tzname">Zone name</param>
+            <param name="coordinates">Zone's coordinates</param>
+            <param name="comment">Zone's comment</param>
+        </member>
+        <member name="P:Afk.ZoneInfo.Country.TZone">
+            <summary>
+            Gets the time zone list of country
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.DayOfRule">
+            <summary>
+            Définit le positionnement d'un jour d'une règle
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.DayOfRule.#ctor(Afk.ZoneInfo.DayWorkKind,System.DayOfWeek,System.Int32)">
+            <summary>
+            Initialise une nouvelle instance de <see cref="T:Afk.ZoneInfo.DayOfRule"/>
+            </summary>
+            <param name="dayWork">Type de positionnement</param>
+            <param name="dayWeek">Jour de la semaine à respecter</param>
+            <param name="dayMonth">Jour du mois à respecter</param>
+        </member>
+        <member name="P:Afk.ZoneInfo.DayOfRule.DayWork">
+            <summary>
+            Obtient le type de positionnement
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.DayOfRule.DayOfMonth">
+            <summary>
+            Obtient la date de la journée
+            </summary>
+            <remarks>La propriété est le positionnement minimum/maximum
+            si <see cref="P:Afk.ZoneInfo.DayOfRule.DayWork"/> est égal à <see cref="F:Afk.ZoneInfo.DayWorkKind.DowGeq"/> ou <see cref="F:Afk.ZoneInfo.DayWorkKind.DowLeq"/>
+            Sun>=8 sera le premier dimanche après le 8 du mois.
+            </remarks>
+        </member>
+        <member name="P:Afk.ZoneInfo.DayOfRule.DayWeek">
+            <summary>
+            Obtient le jour de la semaine correspondant à la date
+            </summary>
+            <remarks>La propriété est ignorée si DayWork = DayWorkKind.Dom</remarks>
+        </member>
+        <member name="T:Afk.ZoneInfo.DayWorkKind">
+            <summary>
+            Définit le type de jour 
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.DayWorkKind.Dom">
+            <summary>
+            Day of month. Exact day date.
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.DayWorkKind.DowGeq">
+            <summary>
+            Day of Week Greater or Equal
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.DayWorkKind.DowLeq">
+            <summary>
+            Day of Week Less or Equal
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.MultiPlatform">
+            <summary>
+            Provides functions for multiplatform
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.MultiPlatform.GetCurrentAssembly">
+            <summary>
+            Gets the current assembly
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Afk.ZoneInfo.Rule">
+             <summary>
+             Représente une règle de changement d'heure
+             </summary>
+             <remarks>
+             A rule line has the form
+             <p><b>Rule</b>  NAME  FROM  TO    TYPE  IN   ON       AT    SAVE  LETTER/S</p>
+             <para>
+             For example:
+            
+             <code>Rule  US    1967  1973  -     Apr  lastSun  2:00  1:00  D</code>
+             </para>
+             The fields that make up a rule line are:
+             <list type="table">
+             <listheader><term>Name</term><description>Description</description></listheader> 
+             <item><term>NAME</term><description>Gives the (arbitrary) name of the set of rules this
+             rule is part of.</description></item>
+             <item><term>FROM</term><description>Gives the first year in which the rule applies. Any
+             integer year can be supplied; the Gregorian calendar
+             is assumed.  The word minimum (or an abbreviation)
+             means the minimum year representable as an integer.
+             The word maximum (or an abbreviation) means the
+             maximum year representable as an integer.  Rules can
+             describe times that are not representable as time
+             values, with the unrepresentable times ignored; this
+             allows rules to be portable among hosts with
+             differing time value types.</description></item>
+            
+             <item><term>TO</term><description>Gives the final year in which the rule applies. In
+             addition to minimum and maximum (as above), the word
+             only (or an abbreviation) may be used to repeat the
+             value of the FROM field.</description></item>
+            
+             <item><term>TYPE</term><description>Gives the type of year in which the rule applies.
+             <para>If TYPE is - then the rule applies in all years
+             between FROM and TO inclusive.</para><para>If TYPE is something
+             else, then zic executes the command</para><para>yearistype year type</para>
+             to check the type of a year: an exit status of zero
+             is taken to mean that the year is of the given type;
+             an exit status of one is taken to mean that the year
+             is not of the given type.</description></item>
+            
+             <item><term>IN</term><description>Names the month in which the rule takes effect.
+             Month names may be abbreviated.</description></item>
+            
+             <item><term>ON</term><description>Gives the day on which the rule takes effect.
+             Recognized forms include:
+             <list type="bullet">
+             <item><term>5</term><description>the fifth of the month</description></item>
+             <item><term>lastSun</term><description>the last Sunday in the month</description></item>
+             <item><term>lastMon</term><description>the last Monday in the month</description></item>
+             <item><term>Sun>=8</term><description>first Sunday on or after the eighth</description></item>
+             <item><term>Sun&gt;=25</term><description>last Sunday on or before the 25th</description></item>
+             </list>
+             <para>Names of days of the week may be abbreviated or
+             spelled out in full.  Note that there must be no
+             spaces within the ON field.</para></description></item>
+            
+             <item><term>AT</term><description>Gives the time of day at which the rule takes effect.
+             <para>Recognized forms include:</para>
+             <list type="bullet">
+             <item><term>2</term><description>time in hours</description></item>
+             <item><term>2:00</term><description>time in hours and minutes</description></item>
+             <item><term>15:00</term><description>24-hour format time (for times after noon)</description></item>
+             <item><term>1:28:14</term><description>time in hours, minutes, and seconds</description></item>
+             <item><term>-</term><description>equivalent to 0</description></item>
+             </list>
+             <para>where hour 0 is midnight at the start of the day,
+             and hour 24 is midnight at the end of the day.  Any
+             of these forms may be followed by the letter w if
+             the given time is local "wall clock" time, s if the
+             given time is local "standard" time, or u (or g or
+             z) if the given time is universal time; in the
+             absence of an indicator, wall clock time is assumed.</para></description></item>
+            
+             <item><term>SAVE</term><description>Gives the amount of time to be added to local
+             standard time when the rule is in effect. This
+             field has the same format as the AT field (although,
+             of course, the w and s suffixes are not used).</description></item>
+            
+             <item><term>LETTER/S</term><description>Gives the "variable part" (for example, the "S" or
+             "D" in "EST" or "EDT") of time zone abbreviations to
+             be used when this rule is in effect.  If this field
+             is -, the variable part is null.</description></item>
+             </list>
+             </remarks>
+        </member>
+        <member name="M:Afk.ZoneInfo.Rule.#ctor">
+            <summary>
+            Initialise une nouvelle instance de <see cref="T:Afk.ZoneInfo.Rule"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Rule.Name">
+            <summary>
+            Obtient le nom de la règle
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Rule.Filename">
+            <summary>
+            Obtient le nom du fichier définissant la règle
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Rule.LineNumber">
+            <summary>
+            Obtient la ligne du fichier définissant la règle
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Rule.StandardOffset">
+            <summary>
+            Obtient l'offset à ajouter à l'heure standard
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Rule.Letter">
+            <summary>
+            Obtient la lettre défissant la règle
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Rule.LowerYear">
+            <summary>
+            Obtient l'année de début de définition de la règle
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Rule.HighYear">
+            <summary>
+            Obtient l'année de fin de définition de la règle
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Rule.YearType">
+            <summary>
+            Obtient le type d'année que respecte la règle
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.RuleDate">
+            <summary>
+            Représente un positionnement de date sans spécification d'année
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.RuleDate.#ctor">
+            <summary>
+            Initialise une nouvelle instance de <see cref="T:Afk.ZoneInfo.RuleDate"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.RuleDate.Day">
+            <summary>
+            Obtient la spécification du jour de la règle
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.RuleDate.Month">
+            <summary>
+            Obtient le mois de la règle
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.RuleDate.At">
+            <summary>
+            Obtient l'heure de la règle
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.RuleDate.AtKind">
+            <summary>
+            Obtient le type de date spécifié par la règle
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.RuleDate.ToUnspecifiedTime(System.Int32)">
+            <summary>
+            Obtient une date sans spécification de fuseau en fonction de la définition de la règle
+            </summary>
+            <param name="year">Année de positionnement de la date</param>
+            <returns>Datetime représentant la date de la règle</returns>
+            <remarks>La date est de type DateTimeKind.Unspecified</remarks>
+        </member>
+        <member name="T:Afk.ZoneInfo.RuleSearchKind">
+            <summary>
+            Définit le type de comparaison pour la recherche de règle.
+            Règle applicable strictement avant la date ou règle applicable avant et égale à la date
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.RuleSearchKind.LessThan">
+            <summary>
+            Strictement inférieure
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.RuleSearchKind.LessThanOrEqual">
+            <summary>
+            Inférieure ou égale
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones">
+            <summary>
+            Enumerates all time zone
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones"/>
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.Africa">
+            <summary>
+            Represents all timezones for Africa
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.Africa.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.Africa"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Abidjan">
+            <summary>
+            Gets the timezone for Africa/Abidjan
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Accra">
+            <summary>
+            Gets the timezone for Africa/Accra
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Algiers">
+            <summary>
+            Gets the timezone for Africa/Algiers
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Bissau">
+            <summary>
+            Gets the timezone for Africa/Bissau
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Cairo">
+            <summary>
+            Gets the timezone for Africa/Cairo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Casablanca">
+            <summary>
+            Gets the timezone for Africa/Casablanca
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Ceuta">
+            <summary>
+            Gets the timezone for Africa/Ceuta
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.El_Aaiun">
+            <summary>
+            Gets the timezone for Africa/El_Aaiun
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Johannesburg">
+            <summary>
+            Gets the timezone for Africa/Johannesburg
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Juba">
+            <summary>
+            Gets the timezone for Africa/Juba
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Khartoum">
+            <summary>
+            Gets the timezone for Africa/Khartoum
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Lagos">
+            <summary>
+            Gets the timezone for Africa/Lagos
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Maputo">
+            <summary>
+            Gets the timezone for Africa/Maputo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Monrovia">
+            <summary>
+            Gets the timezone for Africa/Monrovia
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Nairobi">
+            <summary>
+            Gets the timezone for Africa/Nairobi
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Ndjamena">
+            <summary>
+            Gets the timezone for Africa/Ndjamena
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Sao_Tome">
+            <summary>
+            Gets the timezone for Africa/Sao_Tome
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Tripoli">
+            <summary>
+            Gets the timezone for Africa/Tripoli
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Tunis">
+            <summary>
+            Gets the timezone for Africa/Tunis
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Africa.Windhoek">
+            <summary>
+            Gets the timezone for Africa/Windhoek
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.America">
+            <summary>
+            Represents all timezones for America
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.America.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.America"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Adak">
+            <summary>
+            Gets the timezone for America/Adak
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Anchorage">
+            <summary>
+            Gets the timezone for America/Anchorage
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Araguaina">
+            <summary>
+            Gets the timezone for America/Araguaina
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.America.Argentina">
+            <summary>
+            Represents all timezones for Argentina
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.America.Argentina.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.America.Argentina"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.Buenos_Aires">
+            <summary>
+            Gets the timezone for America/Argentina/Buenos_Aires
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.Catamarca">
+            <summary>
+            Gets the timezone for America/Argentina/Catamarca
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.Cordoba">
+            <summary>
+            Gets the timezone for America/Argentina/Cordoba
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.Jujuy">
+            <summary>
+            Gets the timezone for America/Argentina/Jujuy
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.La_Rioja">
+            <summary>
+            Gets the timezone for America/Argentina/La_Rioja
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.Mendoza">
+            <summary>
+            Gets the timezone for America/Argentina/Mendoza
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.Rio_Gallegos">
+            <summary>
+            Gets the timezone for America/Argentina/Rio_Gallegos
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.Salta">
+            <summary>
+            Gets the timezone for America/Argentina/Salta
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.San_Juan">
+            <summary>
+            Gets the timezone for America/Argentina/San_Juan
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.San_Luis">
+            <summary>
+            Gets the timezone for America/Argentina/San_Luis
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.Tucuman">
+            <summary>
+            Gets the timezone for America/Argentina/Tucuman
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Argentina.Ushuaia">
+            <summary>
+            Gets the timezone for America/Argentina/Ushuaia
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Asuncion">
+            <summary>
+            Gets the timezone for America/Asuncion
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Atikokan">
+            <summary>
+            Gets the timezone for America/Atikokan
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Bahia">
+            <summary>
+            Gets the timezone for America/Bahia
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Bahia_Banderas">
+            <summary>
+            Gets the timezone for America/Bahia_Banderas
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Barbados">
+            <summary>
+            Gets the timezone for America/Barbados
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Belem">
+            <summary>
+            Gets the timezone for America/Belem
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Belize">
+            <summary>
+            Gets the timezone for America/Belize
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Blanc_Sablon">
+            <summary>
+            Gets the timezone for America/Blanc-Sablon
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Boa_Vista">
+            <summary>
+            Gets the timezone for America/Boa_Vista
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Bogota">
+            <summary>
+            Gets the timezone for America/Bogota
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Boise">
+            <summary>
+            Gets the timezone for America/Boise
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Cambridge_Bay">
+            <summary>
+            Gets the timezone for America/Cambridge_Bay
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Campo_Grande">
+            <summary>
+            Gets the timezone for America/Campo_Grande
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Cancun">
+            <summary>
+            Gets the timezone for America/Cancun
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Caracas">
+            <summary>
+            Gets the timezone for America/Caracas
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Cayenne">
+            <summary>
+            Gets the timezone for America/Cayenne
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Chicago">
+            <summary>
+            Gets the timezone for America/Chicago
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Chihuahua">
+            <summary>
+            Gets the timezone for America/Chihuahua
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Costa_Rica">
+            <summary>
+            Gets the timezone for America/Costa_Rica
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Creston">
+            <summary>
+            Gets the timezone for America/Creston
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Cuiaba">
+            <summary>
+            Gets the timezone for America/Cuiaba
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Curacao">
+            <summary>
+            Gets the timezone for America/Curacao
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Danmarkshavn">
+            <summary>
+            Gets the timezone for America/Danmarkshavn
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Dawson">
+            <summary>
+            Gets the timezone for America/Dawson
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Dawson_Creek">
+            <summary>
+            Gets the timezone for America/Dawson_Creek
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Denver">
+            <summary>
+            Gets the timezone for America/Denver
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Detroit">
+            <summary>
+            Gets the timezone for America/Detroit
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Edmonton">
+            <summary>
+            Gets the timezone for America/Edmonton
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Eirunepe">
+            <summary>
+            Gets the timezone for America/Eirunepe
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.El_Salvador">
+            <summary>
+            Gets the timezone for America/El_Salvador
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Fort_Nelson">
+            <summary>
+            Gets the timezone for America/Fort_Nelson
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Fortaleza">
+            <summary>
+            Gets the timezone for America/Fortaleza
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Glace_Bay">
+            <summary>
+            Gets the timezone for America/Glace_Bay
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Godthab">
+            <summary>
+            Gets the timezone for America/Godthab
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Goose_Bay">
+            <summary>
+            Gets the timezone for America/Goose_Bay
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Grand_Turk">
+            <summary>
+            Gets the timezone for America/Grand_Turk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Guatemala">
+            <summary>
+            Gets the timezone for America/Guatemala
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Guayaquil">
+            <summary>
+            Gets the timezone for America/Guayaquil
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Guyana">
+            <summary>
+            Gets the timezone for America/Guyana
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Halifax">
+            <summary>
+            Gets the timezone for America/Halifax
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Havana">
+            <summary>
+            Gets the timezone for America/Havana
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Hermosillo">
+            <summary>
+            Gets the timezone for America/Hermosillo
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.America.Indiana">
+            <summary>
+            Represents all timezones for Indiana
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.America.Indiana.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.America.Indiana"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Indiana.Indianapolis">
+            <summary>
+            Gets the timezone for America/Indiana/Indianapolis
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Indiana.Knox">
+            <summary>
+            Gets the timezone for America/Indiana/Knox
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Indiana.Marengo">
+            <summary>
+            Gets the timezone for America/Indiana/Marengo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Indiana.Petersburg">
+            <summary>
+            Gets the timezone for America/Indiana/Petersburg
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Indiana.Tell_City">
+            <summary>
+            Gets the timezone for America/Indiana/Tell_City
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Indiana.Vevay">
+            <summary>
+            Gets the timezone for America/Indiana/Vevay
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Indiana.Vincennes">
+            <summary>
+            Gets the timezone for America/Indiana/Vincennes
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Indiana.Winamac">
+            <summary>
+            Gets the timezone for America/Indiana/Winamac
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Inuvik">
+            <summary>
+            Gets the timezone for America/Inuvik
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Iqaluit">
+            <summary>
+            Gets the timezone for America/Iqaluit
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Jamaica">
+            <summary>
+            Gets the timezone for America/Jamaica
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Juneau">
+            <summary>
+            Gets the timezone for America/Juneau
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.America.Kentucky">
+            <summary>
+            Represents all timezones for Kentucky
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.America.Kentucky.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.America.Kentucky"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Kentucky.Louisville">
+            <summary>
+            Gets the timezone for America/Kentucky/Louisville
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Kentucky.Monticello">
+            <summary>
+            Gets the timezone for America/Kentucky/Monticello
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.La_Paz">
+            <summary>
+            Gets the timezone for America/La_Paz
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Lima">
+            <summary>
+            Gets the timezone for America/Lima
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Los_Angeles">
+            <summary>
+            Gets the timezone for America/Los_Angeles
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Maceio">
+            <summary>
+            Gets the timezone for America/Maceio
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Managua">
+            <summary>
+            Gets the timezone for America/Managua
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Manaus">
+            <summary>
+            Gets the timezone for America/Manaus
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Martinique">
+            <summary>
+            Gets the timezone for America/Martinique
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Matamoros">
+            <summary>
+            Gets the timezone for America/Matamoros
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Mazatlan">
+            <summary>
+            Gets the timezone for America/Mazatlan
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Menominee">
+            <summary>
+            Gets the timezone for America/Menominee
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Merida">
+            <summary>
+            Gets the timezone for America/Merida
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Metlakatla">
+            <summary>
+            Gets the timezone for America/Metlakatla
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Mexico_City">
+            <summary>
+            Gets the timezone for America/Mexico_City
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Miquelon">
+            <summary>
+            Gets the timezone for America/Miquelon
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Moncton">
+            <summary>
+            Gets the timezone for America/Moncton
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Monterrey">
+            <summary>
+            Gets the timezone for America/Monterrey
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Montevideo">
+            <summary>
+            Gets the timezone for America/Montevideo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Nassau">
+            <summary>
+            Gets the timezone for America/Nassau
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.New_York">
+            <summary>
+            Gets the timezone for America/New_York
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Nipigon">
+            <summary>
+            Gets the timezone for America/Nipigon
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Nome">
+            <summary>
+            Gets the timezone for America/Nome
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Noronha">
+            <summary>
+            Gets the timezone for America/Noronha
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.America.North_Dakota">
+            <summary>
+            Represents all timezones for North_Dakota
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.America.North_Dakota.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.America.North_Dakota"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.North_Dakota.Beulah">
+            <summary>
+            Gets the timezone for America/North_Dakota/Beulah
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.North_Dakota.Center">
+            <summary>
+            Gets the timezone for America/North_Dakota/Center
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.North_Dakota.New_Salem">
+            <summary>
+            Gets the timezone for America/North_Dakota/New_Salem
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Ojinaga">
+            <summary>
+            Gets the timezone for America/Ojinaga
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Panama">
+            <summary>
+            Gets the timezone for America/Panama
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Pangnirtung">
+            <summary>
+            Gets the timezone for America/Pangnirtung
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Paramaribo">
+            <summary>
+            Gets the timezone for America/Paramaribo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Phoenix">
+            <summary>
+            Gets the timezone for America/Phoenix
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Port_of_Spain">
+            <summary>
+            Gets the timezone for America/Port_of_Spain
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Port_au_Prince">
+            <summary>
+            Gets the timezone for America/Port-au-Prince
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Porto_Velho">
+            <summary>
+            Gets the timezone for America/Porto_Velho
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Puerto_Rico">
+            <summary>
+            Gets the timezone for America/Puerto_Rico
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Punta_Arenas">
+            <summary>
+            Gets the timezone for America/Punta_Arenas
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Rainy_River">
+            <summary>
+            Gets the timezone for America/Rainy_River
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Rankin_Inlet">
+            <summary>
+            Gets the timezone for America/Rankin_Inlet
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Recife">
+            <summary>
+            Gets the timezone for America/Recife
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Regina">
+            <summary>
+            Gets the timezone for America/Regina
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Resolute">
+            <summary>
+            Gets the timezone for America/Resolute
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Rio_Branco">
+            <summary>
+            Gets the timezone for America/Rio_Branco
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Santarem">
+            <summary>
+            Gets the timezone for America/Santarem
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Santiago">
+            <summary>
+            Gets the timezone for America/Santiago
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Santo_Domingo">
+            <summary>
+            Gets the timezone for America/Santo_Domingo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Sao_Paulo">
+            <summary>
+            Gets the timezone for America/Sao_Paulo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Scoresbysund">
+            <summary>
+            Gets the timezone for America/Scoresbysund
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Sitka">
+            <summary>
+            Gets the timezone for America/Sitka
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.St_Johns">
+            <summary>
+            Gets the timezone for America/St_Johns
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Swift_Current">
+            <summary>
+            Gets the timezone for America/Swift_Current
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Tegucigalpa">
+            <summary>
+            Gets the timezone for America/Tegucigalpa
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Thule">
+            <summary>
+            Gets the timezone for America/Thule
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Thunder_Bay">
+            <summary>
+            Gets the timezone for America/Thunder_Bay
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Tijuana">
+            <summary>
+            Gets the timezone for America/Tijuana
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Toronto">
+            <summary>
+            Gets the timezone for America/Toronto
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Vancouver">
+            <summary>
+            Gets the timezone for America/Vancouver
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Whitehorse">
+            <summary>
+            Gets the timezone for America/Whitehorse
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Winnipeg">
+            <summary>
+            Gets the timezone for America/Winnipeg
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Yakutat">
+            <summary>
+            Gets the timezone for America/Yakutat
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Yellowknife">
+            <summary>
+            Gets the timezone for America/Yellowknife
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.Antarctica">
+            <summary>
+            Represents all timezones for Antarctica
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.Antarctica.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.Antarctica"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Casey">
+            <summary>
+            Gets the timezone for Antarctica/Casey
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Davis">
+            <summary>
+            Gets the timezone for Antarctica/Davis
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.DumontDUrville">
+            <summary>
+            Gets the timezone for Antarctica/DumontDUrville
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Macquarie">
+            <summary>
+            Gets the timezone for Antarctica/Macquarie
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Mawson">
+            <summary>
+            Gets the timezone for Antarctica/Mawson
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Palmer">
+            <summary>
+            Gets the timezone for Antarctica/Palmer
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Rothera">
+            <summary>
+            Gets the timezone for Antarctica/Rothera
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Syowa">
+            <summary>
+            Gets the timezone for Antarctica/Syowa
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Troll">
+            <summary>
+            Gets the timezone for Antarctica/Troll
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Vostok">
+            <summary>
+            Gets the timezone for Antarctica/Vostok
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.Asia">
+            <summary>
+            Represents all timezones for Asia
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.Asia.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.Asia"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Almaty">
+            <summary>
+            Gets the timezone for Asia/Almaty
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Amman">
+            <summary>
+            Gets the timezone for Asia/Amman
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Anadyr">
+            <summary>
+            Gets the timezone for Asia/Anadyr
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Aqtau">
+            <summary>
+            Gets the timezone for Asia/Aqtau
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Aqtobe">
+            <summary>
+            Gets the timezone for Asia/Aqtobe
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Ashgabat">
+            <summary>
+            Gets the timezone for Asia/Ashgabat
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Atyrau">
+            <summary>
+            Gets the timezone for Asia/Atyrau
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Baghdad">
+            <summary>
+            Gets the timezone for Asia/Baghdad
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Baku">
+            <summary>
+            Gets the timezone for Asia/Baku
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Bangkok">
+            <summary>
+            Gets the timezone for Asia/Bangkok
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Barnaul">
+            <summary>
+            Gets the timezone for Asia/Barnaul
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Beirut">
+            <summary>
+            Gets the timezone for Asia/Beirut
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Bishkek">
+            <summary>
+            Gets the timezone for Asia/Bishkek
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Brunei">
+            <summary>
+            Gets the timezone for Asia/Brunei
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Chita">
+            <summary>
+            Gets the timezone for Asia/Chita
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Choibalsan">
+            <summary>
+            Gets the timezone for Asia/Choibalsan
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Colombo">
+            <summary>
+            Gets the timezone for Asia/Colombo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Damascus">
+            <summary>
+            Gets the timezone for Asia/Damascus
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Dhaka">
+            <summary>
+            Gets the timezone for Asia/Dhaka
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Dili">
+            <summary>
+            Gets the timezone for Asia/Dili
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Dubai">
+            <summary>
+            Gets the timezone for Asia/Dubai
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Dushanbe">
+            <summary>
+            Gets the timezone for Asia/Dushanbe
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Famagusta">
+            <summary>
+            Gets the timezone for Asia/Famagusta
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Gaza">
+            <summary>
+            Gets the timezone for Asia/Gaza
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Hebron">
+            <summary>
+            Gets the timezone for Asia/Hebron
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Ho_Chi_Minh">
+            <summary>
+            Gets the timezone for Asia/Ho_Chi_Minh
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Hong_Kong">
+            <summary>
+            Gets the timezone for Asia/Hong_Kong
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Hovd">
+            <summary>
+            Gets the timezone for Asia/Hovd
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Irkutsk">
+            <summary>
+            Gets the timezone for Asia/Irkutsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Jakarta">
+            <summary>
+            Gets the timezone for Asia/Jakarta
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Jayapura">
+            <summary>
+            Gets the timezone for Asia/Jayapura
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Jerusalem">
+            <summary>
+            Gets the timezone for Asia/Jerusalem
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Kabul">
+            <summary>
+            Gets the timezone for Asia/Kabul
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Kamchatka">
+            <summary>
+            Gets the timezone for Asia/Kamchatka
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Karachi">
+            <summary>
+            Gets the timezone for Asia/Karachi
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Kathmandu">
+            <summary>
+            Gets the timezone for Asia/Kathmandu
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Khandyga">
+            <summary>
+            Gets the timezone for Asia/Khandyga
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Kolkata">
+            <summary>
+            Gets the timezone for Asia/Kolkata
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Krasnoyarsk">
+            <summary>
+            Gets the timezone for Asia/Krasnoyarsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Kuala_Lumpur">
+            <summary>
+            Gets the timezone for Asia/Kuala_Lumpur
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Kuching">
+            <summary>
+            Gets the timezone for Asia/Kuching
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Macau">
+            <summary>
+            Gets the timezone for Asia/Macau
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Magadan">
+            <summary>
+            Gets the timezone for Asia/Magadan
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Makassar">
+            <summary>
+            Gets the timezone for Asia/Makassar
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Manila">
+            <summary>
+            Gets the timezone for Asia/Manila
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Nicosia">
+            <summary>
+            Gets the timezone for Asia/Nicosia
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Novokuznetsk">
+            <summary>
+            Gets the timezone for Asia/Novokuznetsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Novosibirsk">
+            <summary>
+            Gets the timezone for Asia/Novosibirsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Omsk">
+            <summary>
+            Gets the timezone for Asia/Omsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Oral">
+            <summary>
+            Gets the timezone for Asia/Oral
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Pontianak">
+            <summary>
+            Gets the timezone for Asia/Pontianak
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Pyongyang">
+            <summary>
+            Gets the timezone for Asia/Pyongyang
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Qatar">
+            <summary>
+            Gets the timezone for Asia/Qatar
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Qyzylorda">
+            <summary>
+            Gets the timezone for Asia/Qyzylorda
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Riyadh">
+            <summary>
+            Gets the timezone for Asia/Riyadh
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Sakhalin">
+            <summary>
+            Gets the timezone for Asia/Sakhalin
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Samarkand">
+            <summary>
+            Gets the timezone for Asia/Samarkand
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Seoul">
+            <summary>
+            Gets the timezone for Asia/Seoul
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Shanghai">
+            <summary>
+            Gets the timezone for Asia/Shanghai
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Singapore">
+            <summary>
+            Gets the timezone for Asia/Singapore
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Srednekolymsk">
+            <summary>
+            Gets the timezone for Asia/Srednekolymsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Taipei">
+            <summary>
+            Gets the timezone for Asia/Taipei
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Tashkent">
+            <summary>
+            Gets the timezone for Asia/Tashkent
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Tbilisi">
+            <summary>
+            Gets the timezone for Asia/Tbilisi
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Tehran">
+            <summary>
+            Gets the timezone for Asia/Tehran
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Thimphu">
+            <summary>
+            Gets the timezone for Asia/Thimphu
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Tokyo">
+            <summary>
+            Gets the timezone for Asia/Tokyo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Tomsk">
+            <summary>
+            Gets the timezone for Asia/Tomsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Ulaanbaatar">
+            <summary>
+            Gets the timezone for Asia/Ulaanbaatar
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Urumqi">
+            <summary>
+            Gets the timezone for Asia/Urumqi
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Ust_Nera">
+            <summary>
+            Gets the timezone for Asia/Ust-Nera
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Vladivostok">
+            <summary>
+            Gets the timezone for Asia/Vladivostok
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Yakutsk">
+            <summary>
+            Gets the timezone for Asia/Yakutsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Yangon">
+            <summary>
+            Gets the timezone for Asia/Yangon
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Yekaterinburg">
+            <summary>
+            Gets the timezone for Asia/Yekaterinburg
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Yerevan">
+            <summary>
+            Gets the timezone for Asia/Yerevan
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.Atlantic">
+            <summary>
+            Represents all timezones for Atlantic
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.Atlantic.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.Atlantic"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Atlantic.Azores">
+            <summary>
+            Gets the timezone for Atlantic/Azores
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Atlantic.Bermuda">
+            <summary>
+            Gets the timezone for Atlantic/Bermuda
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Atlantic.Canary">
+            <summary>
+            Gets the timezone for Atlantic/Canary
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Atlantic.Cape_Verde">
+            <summary>
+            Gets the timezone for Atlantic/Cape_Verde
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Atlantic.Faroe">
+            <summary>
+            Gets the timezone for Atlantic/Faroe
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Atlantic.Madeira">
+            <summary>
+            Gets the timezone for Atlantic/Madeira
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Atlantic.Reykjavik">
+            <summary>
+            Gets the timezone for Atlantic/Reykjavik
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Atlantic.South_Georgia">
+            <summary>
+            Gets the timezone for Atlantic/South_Georgia
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Atlantic.Stanley">
+            <summary>
+            Gets the timezone for Atlantic/Stanley
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.Australia">
+            <summary>
+            Represents all timezones for Australia
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.Australia.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.Australia"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Adelaide">
+            <summary>
+            Gets the timezone for Australia/Adelaide
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Brisbane">
+            <summary>
+            Gets the timezone for Australia/Brisbane
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Broken_Hill">
+            <summary>
+            Gets the timezone for Australia/Broken_Hill
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Currie">
+            <summary>
+            Gets the timezone for Australia/Currie
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Darwin">
+            <summary>
+            Gets the timezone for Australia/Darwin
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Eucla">
+            <summary>
+            Gets the timezone for Australia/Eucla
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Hobart">
+            <summary>
+            Gets the timezone for Australia/Hobart
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Lindeman">
+            <summary>
+            Gets the timezone for Australia/Lindeman
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Lord_Howe">
+            <summary>
+            Gets the timezone for Australia/Lord_Howe
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Melbourne">
+            <summary>
+            Gets the timezone for Australia/Melbourne
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Perth">
+            <summary>
+            Gets the timezone for Australia/Perth
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Australia.Sydney">
+            <summary>
+            Gets the timezone for Australia/Sydney
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.Europe">
+            <summary>
+            Represents all timezones for Europe
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.Europe.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.Europe"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Amsterdam">
+            <summary>
+            Gets the timezone for Europe/Amsterdam
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Andorra">
+            <summary>
+            Gets the timezone for Europe/Andorra
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Astrakhan">
+            <summary>
+            Gets the timezone for Europe/Astrakhan
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Athens">
+            <summary>
+            Gets the timezone for Europe/Athens
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Belgrade">
+            <summary>
+            Gets the timezone for Europe/Belgrade
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Berlin">
+            <summary>
+            Gets the timezone for Europe/Berlin
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Brussels">
+            <summary>
+            Gets the timezone for Europe/Brussels
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Bucharest">
+            <summary>
+            Gets the timezone for Europe/Bucharest
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Budapest">
+            <summary>
+            Gets the timezone for Europe/Budapest
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Chisinau">
+            <summary>
+            Gets the timezone for Europe/Chisinau
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Copenhagen">
+            <summary>
+            Gets the timezone for Europe/Copenhagen
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Dublin">
+            <summary>
+            Gets the timezone for Europe/Dublin
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Gibraltar">
+            <summary>
+            Gets the timezone for Europe/Gibraltar
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Helsinki">
+            <summary>
+            Gets the timezone for Europe/Helsinki
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Istanbul">
+            <summary>
+            Gets the timezone for Europe/Istanbul
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Kaliningrad">
+            <summary>
+            Gets the timezone for Europe/Kaliningrad
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Kiev">
+            <summary>
+            Gets the timezone for Europe/Kiev
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Kirov">
+            <summary>
+            Gets the timezone for Europe/Kirov
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Lisbon">
+            <summary>
+            Gets the timezone for Europe/Lisbon
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.London">
+            <summary>
+            Gets the timezone for Europe/London
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Luxembourg">
+            <summary>
+            Gets the timezone for Europe/Luxembourg
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Madrid">
+            <summary>
+            Gets the timezone for Europe/Madrid
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Malta">
+            <summary>
+            Gets the timezone for Europe/Malta
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Minsk">
+            <summary>
+            Gets the timezone for Europe/Minsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Monaco">
+            <summary>
+            Gets the timezone for Europe/Monaco
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Moscow">
+            <summary>
+            Gets the timezone for Europe/Moscow
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Oslo">
+            <summary>
+            Gets the timezone for Europe/Oslo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Paris">
+            <summary>
+            Gets the timezone for Europe/Paris
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Prague">
+            <summary>
+            Gets the timezone for Europe/Prague
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Riga">
+            <summary>
+            Gets the timezone for Europe/Riga
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Rome">
+            <summary>
+            Gets the timezone for Europe/Rome
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Samara">
+            <summary>
+            Gets the timezone for Europe/Samara
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Saratov">
+            <summary>
+            Gets the timezone for Europe/Saratov
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Simferopol">
+            <summary>
+            Gets the timezone for Europe/Simferopol
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Sofia">
+            <summary>
+            Gets the timezone for Europe/Sofia
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Stockholm">
+            <summary>
+            Gets the timezone for Europe/Stockholm
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Tallinn">
+            <summary>
+            Gets the timezone for Europe/Tallinn
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Tirane">
+            <summary>
+            Gets the timezone for Europe/Tirane
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Ulyanovsk">
+            <summary>
+            Gets the timezone for Europe/Ulyanovsk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Uzhgorod">
+            <summary>
+            Gets the timezone for Europe/Uzhgorod
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Vienna">
+            <summary>
+            Gets the timezone for Europe/Vienna
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Vilnius">
+            <summary>
+            Gets the timezone for Europe/Vilnius
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Volgograd">
+            <summary>
+            Gets the timezone for Europe/Volgograd
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Warsaw">
+            <summary>
+            Gets the timezone for Europe/Warsaw
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Zaporozhye">
+            <summary>
+            Gets the timezone for Europe/Zaporozhye
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Europe.Zurich">
+            <summary>
+            Gets the timezone for Europe/Zurich
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.Indian">
+            <summary>
+            Represents all timezones for Indian
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.Indian.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.Indian"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Indian.Chagos">
+            <summary>
+            Gets the timezone for Indian/Chagos
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Indian.Christmas">
+            <summary>
+            Gets the timezone for Indian/Christmas
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Indian.Cocos">
+            <summary>
+            Gets the timezone for Indian/Cocos
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Indian.Kerguelen">
+            <summary>
+            Gets the timezone for Indian/Kerguelen
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Indian.Mahe">
+            <summary>
+            Gets the timezone for Indian/Mahe
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Indian.Maldives">
+            <summary>
+            Gets the timezone for Indian/Maldives
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Indian.Mauritius">
+            <summary>
+            Gets the timezone for Indian/Mauritius
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Indian.Reunion">
+            <summary>
+            Gets the timezone for Indian/Reunion
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.Zones.Pacific">
+            <summary>
+            Represents all timezones for Pacific
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.Zones.Pacific.#ctor">
+            <summary>
+            Initiliaze a new instance of <see cref="T:Afk.ZoneInfo.Zones.Pacific"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Apia">
+            <summary>
+            Gets the timezone for Pacific/Apia
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Auckland">
+            <summary>
+            Gets the timezone for Pacific/Auckland
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Bougainville">
+            <summary>
+            Gets the timezone for Pacific/Bougainville
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Chatham">
+            <summary>
+            Gets the timezone for Pacific/Chatham
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Chuuk">
+            <summary>
+            Gets the timezone for Pacific/Chuuk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Easter">
+            <summary>
+            Gets the timezone for Pacific/Easter
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Efate">
+            <summary>
+            Gets the timezone for Pacific/Efate
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Enderbury">
+            <summary>
+            Gets the timezone for Pacific/Enderbury
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Fakaofo">
+            <summary>
+            Gets the timezone for Pacific/Fakaofo
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Fiji">
+            <summary>
+            Gets the timezone for Pacific/Fiji
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Funafuti">
+            <summary>
+            Gets the timezone for Pacific/Funafuti
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Galapagos">
+            <summary>
+            Gets the timezone for Pacific/Galapagos
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Gambier">
+            <summary>
+            Gets the timezone for Pacific/Gambier
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Guadalcanal">
+            <summary>
+            Gets the timezone for Pacific/Guadalcanal
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Guam">
+            <summary>
+            Gets the timezone for Pacific/Guam
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Honolulu">
+            <summary>
+            Gets the timezone for Pacific/Honolulu
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Kiritimati">
+            <summary>
+            Gets the timezone for Pacific/Kiritimati
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Kosrae">
+            <summary>
+            Gets the timezone for Pacific/Kosrae
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Kwajalein">
+            <summary>
+            Gets the timezone for Pacific/Kwajalein
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Majuro">
+            <summary>
+            Gets the timezone for Pacific/Majuro
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Marquesas">
+            <summary>
+            Gets the timezone for Pacific/Marquesas
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Nauru">
+            <summary>
+            Gets the timezone for Pacific/Nauru
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Niue">
+            <summary>
+            Gets the timezone for Pacific/Niue
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Norfolk">
+            <summary>
+            Gets the timezone for Pacific/Norfolk
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Noumea">
+            <summary>
+            Gets the timezone for Pacific/Noumea
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Pago_Pago">
+            <summary>
+            Gets the timezone for Pacific/Pago_Pago
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Palau">
+            <summary>
+            Gets the timezone for Pacific/Palau
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Pitcairn">
+            <summary>
+            Gets the timezone for Pacific/Pitcairn
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Pohnpei">
+            <summary>
+            Gets the timezone for Pacific/Pohnpei
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Port_Moresby">
+            <summary>
+            Gets the timezone for Pacific/Port_Moresby
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Rarotonga">
+            <summary>
+            Gets the timezone for Pacific/Rarotonga
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Tahiti">
+            <summary>
+            Gets the timezone for Pacific/Tahiti
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Tarawa">
+            <summary>
+            Gets the timezone for Pacific/Tarawa
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Tongatapu">
+            <summary>
+            Gets the timezone for Pacific/Tongatapu
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Wake">
+            <summary>
+            Gets the timezone for Pacific/Wake
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Wallis">
+            <summary>
+            Gets the timezone for Pacific/Wallis
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.TimeKind">
+            <summary>
+            Définit les types de date possible
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.TimeKind.LocalWallTime">
+            <summary>
+            Default. Wall clock time
+            w : Wall
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.TimeKind.LocalStandardTime">
+            <summary>
+            Local standard time; winter time
+            s : standard
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.TimeKind.UniversalTime">
+            <summary>
+            UTC time
+            g, u, z : Greenwich, Universal, Zulu
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.TzAdjustmentRule">
+            <summary>
+            Provides information about a time zone adjustment, such as the transition to and from daylight saving time.
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzAdjustmentRule.#ctor(System.DateTime,System.DateTime)">
+            <summary>
+            Initialize a new instance of <see cref="T:Afk.ZoneInfo.TzAdjustmentRule"/>
+            </summary>
+            <param name="dateStart"></param>
+            <param name="dateEnd"></param>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzAdjustmentRule.DateStart">
+            <summary>
+            Gets the date when the adjustment rule takes effect.
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzAdjustmentRule.DateEnd">
+            <summary>
+            Gets the date when the adjustment rule ceases to be in effect.
+            </summary>
+        </member>
+        <member name="T:Afk.ZoneInfo.TzTimeInfo">
+            <summary>
+            Provide access to time zone
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.#cctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Afk.ZoneInfo.TzTimeInfo"/> class.
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeInfo.Rules">
+            <summary>
+            Gets all the rules
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.LoadRessources">
+            <summary>
+            Load resources
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.LoadDirectory(System.String)">
+            <summary>
+            Charge la base olson définie dans le répertoire spécifié
+            </summary>
+            <param name="directory">Répertoire de la base olson</param>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.LoadFile(System.IO.TextReader,System.String)">
+            <summary>
+            Charge un ensemble de zone/rule/link
+            </summary>
+            <param name="reader"></param>
+            <param name="filename"></param>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.LoadCountryCode(System.IO.TextReader)">
+            <summary>
+            Charge le code de chaque région
+            </summary>
+            <param name="reader"></param>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.LoadZoneName(System.IO.TextReader)">
+            <summary>
+            Charge la définition des régions
+            </summary>
+            <param name="reader"></param>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.LoadMappingZones(System.IO.TextReader)">
+            <summary>
+            Charge la table de mappage entre les zone windows et tzid
+            </summary>
+            <param name="reader"></param>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.BuildZone">
+            <summary>
+            Construit l'ensemble des règles chargées
+            </summary>
+            <remarks>
+            La date de début d'une zone ne correspond pas forcement à la date de fin de zone précédente. Exemple avec Pacific/Samoa ou
+            on perd 1 journée le 30 décembre 2011
+            Zone Pacific/Apia	 12:33:04 -	LMT	1892 Jul  5
+            -11:26:56 -	LMT	1911
+            -11:30	-	-1130	1950
+            -11:00	WS	-11/-10	2011 Dec 29 24:00
+             13:00	WS	+13/+14
+             
+            Certaines dates de fin peuvent coincider avec des règles de changement
+            Exemple : America/Grand_Turk
+            -5:00	US	E%sT	2015 Nov Sun>=1 2:00 coincide avec la régle Rule	US	2007	max	-	Nov	Sun>=1	2:00	0	S
+            -4:00	-	AST	2018 Mar 11 3:00  
+            1/11/2015 01:00 EDT (sunday locale) => 05:00u
+            1/11/2015 02:00 AST (sunday locale) => 06:00u
+            
+            -4:00	-	AST	2018 Mar 11 3:00 coincide avec la régle Rule	US	2007	max	-	Mar	Sun>=8	2:00 (07:00 +5)	1:00	D
+            -5:00	US	E%sT
+            11/03/2018 02:00 AST => 06:00u
+            11/03/2018 03:00 EDT => 07:00u
+            11/03/2018 04:00 EDT => 08:00u
+            
+            La date de début UTC de la zone suivante est la date de fin UTC de la zone précédente, ce n'est pas vrai pour ce qui concerne les
+            dates locales. Exemple de samoa qui avance de 24 heures.
+            
+            Date de début : On construit la date à partir de la date utc précédente et on applique la régle courante pour obtenir la date locale
+            Date de fin : On construit la date à partir de la date until en appliquant le changement DST précédent strictement inférieure
+            </remarks>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.GetZoneNames">
+            <summary>
+            Gets the time zone name
+            </summary>
+            <returns><b>string[]</b> of time zone name.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.GetBackward">
+            <summary>
+            Obtient le nom de tous les liens
+            </summary>
+            <returns>Tableau des liens</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.GetCountriesCode">
+            <summary>
+            Gets the country code.
+            </summary>
+            <returns><b>string[]</b> of country code.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.GetCountries(System.String)">
+            <summary>
+            Gets the country
+            </summary>
+            <param name="code">Country code</param>
+            <returns>A <see cref="T:Afk.ZoneInfo.Country"/> object that represent the country.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.GetZone(System.String)">
+            <summary>
+            Gets the <see cref="T:Afk.ZoneInfo.TzTimeZone"/> that represents the time zone.
+            </summary>
+            <param name="zoneName">The time zone name, for sample "Europe/Paris"</param>
+            <exception cref="T:System.ArgumentNullException">zoneName is null or empty.</exception>
+            <returns>An <see cref="T:Afk.ZoneInfo.TzTimeZone"/> object whose name is the value of the zoneName parameter, null otherwise</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.GetZones">
+            <summary>
+            Gets the list of <see cref="T:Afk.ZoneInfo.TzTimeZone"/>.
+            </summary>
+            <returns>Array of <see cref="T:Afk.ZoneInfo.TzTimeZone"/>.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeInfo.FindSystemTzTimeZoneById(System.String)">
+            <summary>
+            Retrieve a <see cref="T:Afk.ZoneInfo.TzTimeZone"/> object from its windows identifier
+            </summary>
+            <param name="id">The windows time zone identifier.</param>
+            <exception cref="T:System.ArgumentException">id is null or empty.</exception>
+            <returns>An <see cref="T:Afk.ZoneInfo.TzTimeZone"/> object whose windows identifier is the value of the id parameter, otherwise null.</returns>
+        </member>
+        <member name="T:Afk.ZoneInfo.TzTimeZone">
+            <summary>
+            Represents a time zone.
+            </summary>
+            <remarks>
+            The format of each line is:
+            Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+            </remarks>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Afk.ZoneInfo.TzTimeZone"/> class.  
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZone.Name">
+            <summary>
+            Gets the time zone name.
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZone.Filename">
+            <summary>
+            Gets the time zone filename.
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZone.Coordinates">
+            <summary>
+            Gets the time zone coordinates.
+            </summary>
+            <remarks>Coordinates are latitude and longitude of the zone's principal location.</remarks>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZone.Comment">
+            <summary>
+            Gets the time zone comment.
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZone.LineNumber">
+            <summary>
+            Gets the the time zone line number in the file.
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZone.ZoneRules">
+            <summary>
+            Gets the time zone rules.
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZone.CurrentTzTimeZone">
+            <summary>
+            Gets the time zone of the current computer.
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.GetDayChangeTime(System.Int32)">
+            <summary>
+            Obtient les dates de changements de l'année spécifiée
+            </summary>
+            <param name="year">Année de recherche</param>
+            <returns><see cref="T:System.DateTime">DateTime[]</see> des changements qui surviennent dans l'année spécifié.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.UpdateDateChange(System.Int32)">
+            <summary>
+            Obtient pour une année donnée l'ensemble des dates de changement avec leur gmt et standard offset
+            applicable avant cette date.
+            </summary>
+            <param name="year"></param>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.ToLocalTime(System.DateTime,System.Boolean)">
+            <summary>
+            Returns the local time that corresponds to a specified date and time value. 
+            </summary>
+            <param name="datetime">A date and time.</param>
+            <param name="optimize">Value which indicates whether optimize the convert</param>
+            <returns>A <see cref="T:System.DateTime"/> object whose value is the local time that corresponds to time.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.ToUniversalTime(System.DateTime,System.Boolean)">
+            <summary>
+            Returns the Coordinated Universal Time (UTC) that corresponds to a specified time.
+            </summary>
+            <param name="datetime">A date and time.</param>
+            <param name="optimize">Value which indicates whether to optimize the convert</param>
+            <returns>A <see cref="T:System.DateTime"/> object whose value is the Coordinated Universal Time (UTC) that corresponds to time.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.ToTimeZone(System.DateTime,Afk.ZoneInfo.TzTimeZone)">
+            <summary>
+            Returns the local time in the specified time zone that correspond to the specified date in the current time zone.
+            </summary>
+            <param name="datetime">A date and time in the current time zone</param>
+            <param name="zone">The time zone in which the local time is converted.</param>
+            <returns>A local <see cref="T:System.DateTime"/> in the specified time zone.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.ToString(System.String,System.DateTime)">
+            <summary>
+            Returns a string that represents the specified <see cref="T:System.DateTime"/> with the specified format.
+            </summary>
+            <param name="format">String that represents the date and time format.</param>
+            <param name="datetime">A date and time.</param>
+            <returns>A string that represents the <see cref="T:System.DateTime"/> in the specified format.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.GetZoneRule(System.DateTime)">
+            <summary>
+            Obtient la description de zone correspondant à la date spécifiée
+            </summary>
+            <param name="point"><see cref="T:System.DateTime"/> spécifié.</param>
+            <returns><see cref="T:Afk.ZoneInfo.TzTimeZone.ZoneRuleAssociate"/> contenant le <see cref="T:System.DateTime"/> spécifié</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.GetLastStandardOffset(System.Collections.Generic.List{Afk.ZoneInfo.Rule},Afk.ZoneInfo.TzTimeZoneRuleUntil,Afk.ZoneInfo.TzTimeZoneRuleDate,System.TimeSpan,Afk.ZoneInfo.RuleSearchKind)">
+            <summary>
+            Obtient la règle applicable à un point
+            </summary>
+            <param name="rules">Ensemble des règles à parcourir</param>
+            <param name="date"><see cref="T:Afk.ZoneInfo.TzTimeZoneRuleUntil"/> représentant la date du point</param>
+            <param name="startZone">Limite inférieure de validité des règles</param>
+            <param name="gmtOffset"></param>
+            <param name="ruleSearch">Indique si on recherche une régle inférieure ou égal au point</param>
+            <returns></returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.GetRuleAtPoint(System.Collections.Generic.List{Afk.ZoneInfo.Rule},System.DateTime,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Obtient une règle correspond à la date spécifiée
+            </summary>
+            <param name="rules"></param>
+            <param name="date"></param>
+            <param name="gmtOffset"></param>
+            <param name="standardOffset"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.GetLastSaveOffset(System.Int32,System.Collections.Generic.List{Afk.ZoneInfo.Rule},Afk.ZoneInfo.Rule,Afk.ZoneInfo.TzTimeZoneRuleDate,System.TimeSpan)">
+            <summary>
+            Obtient le standard offset applicable à une règle
+            </summary>
+            <param name="year"></param>
+            <param name="rules"></param>
+            <param name="rule"></param>
+            <param name="zoneDate"></param>
+            <param name="gmtOffset"></param>
+            <returns></returns>
+            <remarks>Cette fonction compare des règles définies, comme un changement d'heure ne se
+            produit pas en même temps qu'un autre on peut appliquer le stdoff entre règles sans
+            se soucier de point recouvrant.
+            </remarks>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.ToUnixTimeSeconds(System.DateTime)">
+            <summary>
+            Returns the number of seconds that have elapsed since 1970-01-01T00:00:00Z.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZone.ToUnixTimeMilliseconds(System.DateTime)">
+            <summary>
+            Returns the number of milliseconds that have elapsed since 1970-01-01T00:00:00.000Z.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Afk.ZoneInfo.TzTimeZoneRule">
+            <summary>
+            Représente une règle d'une zone
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRule.#ctor">
+            <summary>
+            Initialise une nouvelle instance de <see cref="T:Afk.ZoneInfo.TzTimeZoneRule"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRule.GmtOffset">
+            <summary>
+            Obtient le temps qu'il faut ajouter à UTC pour obtenir la date standard de la zone
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRule.Format">
+            <summary>
+            Obtient le format de d'abbreviation de la time zone
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRule.RuleName">
+            <summary>
+            Obtient le nom de la règle à appliquer
+            </summary>
+            <remarks>
+            Peut représenter aussi le temps qu'il faut ajouter à la date standard (utiliser StandardOffset)
+            Si aucune règle, le temps standard est appliquée à la zone
+            </remarks>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRule.FixedStandardOffset">
+            <summary>
+            Obtient le temps qu'il faut ajouter à la date standard
+            </summary>
+            <remarks>
+            Cette propriété n'est valable que pour les zone définissant directement l'offset et
+            non pas un nom de règle
+            </remarks>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRule.Until">
+            <summary>
+            Obtient la règle défissant la date butoir d'effet de la zone
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRule.StartZone">
+            <summary>
+            Obtient la date de début de définition de la zone
+            </summary>
+            <remarks>
+            StandardOffset représente l'offset définit avant la date d'effet.
+            GmtOffset représente l'offset définit avant la date d'effet.
+            </remarks>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRule.EndZone">
+            <summary>
+            Obtient la date de fin de définition de la zone
+            </summary>
+            <remarks>
+            StandardOffset représente l'offset définit avant la date d'effet.
+            GmtOffset représente l'offset définit avant la date d'effet.
+            </remarks>
+        </member>
+        <member name="T:Afk.ZoneInfo.TzTimeZoneRuleDate">
+            <summary>
+            Represents a timezone rule date
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRuleDate.UtcDate">
+            <summary>
+            Gets the utc date of current instance
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRuleDate.StandardOffset">
+            <summary>
+            Gets the standard offset applicable to current instance
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRuleDate.GmtOffset">
+            <summary>
+            Gets gmt offset applicable to current instance
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRuleDate.#ctor(System.DateTime,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Initialize a new instance of <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/>
+            </summary>
+            <param name="dateTime"></param>
+            <param name="gmtOffset"></param>
+            <param name="standardOffset"></param>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRuleDate.#ctor(System.DateTime,System.DateTime,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Initialize a new instance of <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/>
+            </summary>
+            <param name="utc"></param>
+            <param name="local"></param>
+            <param name="gmtOffset"></param>
+            <param name="standardOffset"></param>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRuleDate.#ctor">
+            <summary>
+            Initialize a new instance of <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/>
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRuleDate.ToLocalTime">
+            <summary>
+            Gets the local datetime of current instance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRuleDate.op_LessThan(Afk.ZoneInfo.TzTimeZoneRuleDate,Afk.ZoneInfo.TzTimeZoneRuleDate)">
+            <summary>
+            Détermine si un <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/> spécifié est inférieur à un autre <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/> spécifié
+            </summary>
+            <param name="date1"></param>
+            <param name="date2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRuleDate.op_GreaterThan(Afk.ZoneInfo.TzTimeZoneRuleDate,Afk.ZoneInfo.TzTimeZoneRuleDate)">
+            <summary>
+            Détermine si un <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/> spécifié est supérieur à un autre <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/> spécifié
+            </summary>
+            <param name="date1"></param>
+            <param name="date2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRuleDate.op_LessThanOrEqual(Afk.ZoneInfo.TzTimeZoneRuleDate,Afk.ZoneInfo.TzTimeZoneRuleDate)">
+            <summary>
+            Détermine si un <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/> spécifié est inférieur ou égal à un autre <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/> spécifié
+            </summary>
+            <param name="date1"></param>
+            <param name="date2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRuleDate.op_GreaterThanOrEqual(Afk.ZoneInfo.TzTimeZoneRuleDate,Afk.ZoneInfo.TzTimeZoneRuleDate)">
+            <summary>
+            Détermine si un <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/> spécifié est supérieur ou égal à un autre <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleDate"/> spécifié
+            </summary>
+            <param name="date1"></param>
+            <param name="date2"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Afk.ZoneInfo.TzTimeZoneRuleUntil">
+            <summary>
+            Représente une règle de fin de zone.
+            </summary>
+            <remarks>Cette règle définie une date fixe par l'association de l'année.</remarks>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzTimeZoneRuleUntil.#ctor">
+            <summary>
+            Initialise une nouvelle instance de <see cref="T:Afk.ZoneInfo.TzTimeZoneRuleUntil"/>
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.TzTimeZoneRuleUntil.Year">
+            <summary>
+            Obtient l'année de borne supérieure de la règle de zone
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.GetFields(System.String,System.Int32)">
+            <summary>
+            Découpe une ligne en ses différentes parties
+            </summary>
+            <param name="line">Ligne à découper</param>
+            <param name="count">Nombre maximum de partie à renvoyer</param>
+            <returns>Liste des différents éléments contenus dans la ligne spécifiée.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.GetMonth(System.String)">
+            <summary>
+            Obtient l'indice du mois spécifié
+            </summary>
+            <param name="month"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.IsYearType(System.Int32,Afk.ZoneInfo.YearType)">
+            <summary>
+            Indique si l'année spécifiée est du type spécifié
+            </summary>
+            <param name="year">Année</param>
+            <param name="yearType">Type d'année à vérifier</param>
+            <returns></returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.itsabbr(System.String,System.String)">
+            <summary>
+            Indique si une abbréviation vérifie un mot
+            </summary>
+            <param name="abbr">Abbréviation</param>
+            <param name="word">Mot à vérifier</param>
+            <returns>True si l'abbréviation peut se rapporter au mot</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.GetRule(System.Collections.Generic.List{System.String})">
+            <summary>
+            Obtient une règle en fonction de sa description
+            </summary>
+            <param name="ruleDescription"></param>
+            <returns>
+            # Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
+            </returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.SetRuleSub(Afk.ZoneInfo.RuleDate,System.String,System.String,System.String)">
+            <summary>
+            Remplit une règle avec les paramètres spécifiés
+            </summary>
+            <param name="rp">Règle à complèter</param>
+            <param name="monthp">IN / UNTILMONTH</param>
+            <param name="dayp">ON / UNTILDAY</param>
+            <param name="timep">AT / UNTILTIME</param>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.GetZone(System.Collections.Generic.List{System.String},Afk.ZoneInfo.TzTimeZone@,System.Boolean)">
+            <summary>
+            Obtient une zone en fonction de sa description
+            </summary>
+            <param name="zoneDescription">Ensemble de paramètres décrivant la zone</param>
+            <param name="zone"><see cref="T:Afk.ZoneInfo.TzTimeZone"/> à renseigner en fonction de la description spécifiée.</param>
+            <param name="append">Indique que la description est un ajout ou non à la zone spécifiée.</param>
+            <returns><see cref="T:System.Boolean"/> spécifiant qu'un complément de description est attendu ou non.</returns>
+            <remarks>
+            The format of each line is:
+            Zone	NAME		GMTOFF	RULES	FORMAT	[UNTIL]
+            </remarks>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.GetZoneSub(System.Collections.Generic.List{System.String},Afk.ZoneInfo.TzTimeZone@,System.Boolean)">
+            <summary>
+            Renseigne une zone en fonction de sa description
+            </summary>
+            <param name="zoneDescription">Ensemble de paramètres décrivant la zone</param>
+            <param name="zone"><see cref="T:Afk.ZoneInfo.TzTimeZone"/> à renseigner en fonction de la description spécifiée.</param>
+            <param name="continuation">Indique que la description est un ajout ou non à la zone spécifiée.</param>
+            <returns><see cref="T:System.Boolean"/> spécifiant qu'un complément de description est attendu ou non.</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.GetWallClockTime(Afk.ZoneInfo.RuleDate,System.Int32,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Obtient une date locale en fonction des paramètres spécifiés
+            </summary>
+            <param name="rule"><see cref="T:Afk.ZoneInfo.RuleDate"/> décrivant la date</param>
+            <param name="year">Année de la date</param>
+            <param name="gmtOffset">Offset gmt dans lequel est exprimé la date</param>
+            <param name="stdOffset">Offset standard dans lequel est exprimé la date</param>
+            <returns><see cref="T:System.DateTime"/> de type local correspondant aux paramètres spécifiés</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.GetUTCTime(Afk.ZoneInfo.RuleDate,System.Int32,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Obtient une date utc en fonction des paramètres spécifiés
+            </summary>
+            <param name="rule"><see cref="T:Afk.ZoneInfo.RuleDate"/> décrivant la date</param>
+            <param name="year">Année de la date</param>
+            <param name="gmtOffset">Offset gmt dans lequel est exprimé la date</param>
+            <param name="stdOffset">Offset standard dans lequel est exprimé la date</param>
+            <returns><see cref="T:System.DateTime"/> de type utc correspondant aux paramètres spécifiés</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.GetDateTime(Afk.ZoneInfo.RuleDate,System.Int32,System.TimeSpan,System.TimeSpan,System.DateTimeKind)">
+            <summary>
+            Obtient une date dans le kind spécifié en fonction des paramètres spécifiés
+            </summary>
+            <param name="rule"><see cref="T:Afk.ZoneInfo.RuleDate"/> décrivant la date</param>
+            <param name="year">Année de la date</param>
+            <param name="gmtOffset">Offset gmt dans lequel est exprimé la date</param>
+            <param name="stdOffset">Offset standard dans lequel est exprimé la date</param>
+            <param name="dateTimeKind"><see cref="T:System.DateTimeKind"/> dans lequel exprimer la date</param>
+            <returns><see cref="T:System.DateTime"/> du kind spécifié correspondant aux paramètres spécifiés</returns>
+        </member>
+        <member name="M:Afk.ZoneInfo.TzUtilities.GetDateTime(System.DateTime,System.TimeSpan,System.TimeSpan,System.DateTimeKind)">
+            <summary>
+            Obtient une date dans le kind spécifié en fonction des paramètres spécifiés
+            </summary>
+            <param name="dateTime"><see cref="T:System.DateTime"/> décrivant la date</param>
+            <param name="gmtOffset">Offset gmt dans lequel est exprimé la date</param>
+            <param name="stdOffset">Offset standard dans lequel est exprimé la date</param>
+            <param name="dateTimeKind"><see cref="T:System.DateTimeKind"/> dans lequel exprimer la date</param>
+            <returns><see cref="T:System.DateTime"/> du kind spécifié correspondant aux paramètres spécifiés</returns>
+        </member>
+        <member name="T:Afk.ZoneInfo.XmlTzConvert">
+            <summary>
+            Xml date conversion
+            </summary>
+        </member>
+        <member name="M:Afk.ZoneInfo.XmlTzConvert.ToDateTime(System.String,Afk.ZoneInfo.TzTimeZone,System.DateTimeKind)">
+            <summary>
+            Converts the String to a DateTime equivalent using the specified time zone
+            </summary>
+            <param name="s"></param>
+            <param name="timeZone"></param>
+            <param name="dateTimeKind"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Afk.ZoneInfo.YearType">
+            <summary>
+            Définit les contraintes possibles sur une année
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.YearType.none">
+            <summary>
+            No constraints
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.YearType.even">
+            <summary>
+            Année paire
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.YearType.odd">
+            <summary>
+            Année impaire
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.YearType.nonpres">
+            <summary>
+            The rule applies in years other than U.S. Presidential election years
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.YearType.nonuspres">
+            <summary>
+            The rule applies in years other than U.S. Presidential election years
+            </summary>
+        </member>
+        <member name="F:Afk.ZoneInfo.YearType.uspres">
+            <summary>
+            The rule applies in U.S. Presidential election years
+            </summary>
+        </member>
+    </members>
+</doc>
