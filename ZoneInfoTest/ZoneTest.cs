@@ -9,11 +9,10 @@ namespace ZoneInfoTest
 {
     public class ZoneTest
     {
-        /*
-        [DataTestMethod]
-        [DataRow(false, DisplayName = "No prefetch")]
-        [DataRow(true, DisplayName = "Prefetch")]
-
+        
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
         public void TestYear2000(bool prefetch)
         {
             DateTime utc = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -29,13 +28,13 @@ namespace ZoneInfoTest
                 var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, parisZone);
                 var localZoneInfo = zoneInfo.ToLocalTime(utc, prefetch);
 
-                Assert.AreEqual(localWindows, localZoneInfo);
+                Assert.Equal(localWindows, localZoneInfo);
 
                 utc = utc.AddHours(1);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void TestNewZealand()
         {
             DateTime utc = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -51,15 +50,15 @@ namespace ZoneInfoTest
                 var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, nzZone);
                 var localZoneInfo = zoneInfo.ToLocalTime(utc);
 
-                Assert.AreEqual(localWindows, localZoneInfo);
+                Assert.Equal(localWindows, localZoneInfo);
 
                 utc = utc.AddHours(1);
             }
 
-            Assert.AreEqual(utc.Year, 2018);
+            Assert.Equal(2018, utc.Year);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestTicks()
         {
             var zone = TzTimeInfo.GetZones().Single(z => z.Name == "America/Argentina/Buenos_Aires");
@@ -74,13 +73,13 @@ namespace ZoneInfoTest
                 expected = expected + i;
 
                 var actual = zone.ToLocalTime(start).Ticks;
-                Assert.AreEqual(expected, actual);
+                Assert.Equal(expected, actual);
             }
         }
-
-        [DataTestMethod]
-        [DataRow("Europe/Paris", DisplayName = "France")]
-        [DataRow("America/Grand_Turk", DisplayName = "Grand Turk")]
+        
+        [Theory]
+        [InlineData("Europe/Paris")]
+        [InlineData("America/Grand_Turk")]
         public void TestPrefetch(string zoneName)
         {
             var zone = TzTimeInfo.GetZones().Single(z => z.Name == zoneName);
@@ -92,9 +91,9 @@ namespace ZoneInfoTest
                 start = start.AddHours(1);
                 DateTime d1 = zone.ToLocalTime(start, false);
                 DateTime d2 = zone.ToLocalTime(start, true);
-                Assert.AreEqual(d1, d2);
+                Assert.Equal(d1, d2);
             }
-        }*/
+        }
 
         [Fact]
         public void TestGrandTruk()
