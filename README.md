@@ -5,7 +5,7 @@ The **Afk.ZoneInfo** use the Iana timezone database (previously named Olson Data
 By default the library is linked with a database files. You can override it with recent files, for this set the environment variable **TZDIR** with the new directory of database files.
 
 # VERSION
-The library is compatible with netstandard, net40, net45 and net46
+The library is compatible with netstandard2.0
 
 # NUGET
 The easiest way to install is by using [NuGet](https://www.nuget.org/packages/Afk.ZoneInfo/).
