@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -115,7 +116,9 @@ namespace Afk.ZoneInfo
             if (string.IsNullOrEmpty(directory))
                 throw new ArgumentNullException(nameof(directory));
 
-            string[] files = Directory.GetFiles(directory);
+            // Ignore backzone file
+            string[] excludeFiles = new string[] { "BACKZONE", "CALENDARS", "MAKEFILE", "NEWS", "README", "VERSION" };
+            string[] files = Directory.GetFiles(directory).Where(e => !excludeFiles.Contains(Path.GetFileName(e).ToUpperInvariant())).ToArray();
 
             foreach (string file in files)
             {
