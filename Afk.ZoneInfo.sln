@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Afk.ZoneInfo", "Afk.ZoneInfo\Afk.ZoneInfo.csproj", "{78C25B6A-0361-4267-A34E-EB53BD95E633}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneInfoTest", "ZoneInfoTest\ZoneInfoTest.csproj", "{723D356C-CF39-4C03-98CC-4A1DE8420402}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZoneInfoTest", "ZoneInfoTest\ZoneInfoTest.csproj", "{723D356C-CF39-4C03-98CC-4A1DE8420402}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

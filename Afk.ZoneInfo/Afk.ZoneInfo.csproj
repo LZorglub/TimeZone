@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Afk.ZoneInfo is a .Net library which use the Iana timezone database. By default the library is linked with database files, to override it set the environment variable TZDIR with the new directory of database files.</Description>
     <Copyright>Copyright (c) 2010</Copyright>

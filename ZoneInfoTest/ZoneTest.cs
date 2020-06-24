@@ -110,10 +110,16 @@ namespace ZoneInfoTest
 
             while (utc.Year <= 2020)
             {
-                var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, turkCaico);
-                var localZoneInfo = zoneInfo.ToLocalTime(utc, false);
+                if (utc.Year != 2018)
+                {
+                    // The windows "Turks And Caicos Standard Time" is wrong in 2018
+                    // The result for 1 jan. 2018 05:00am is 1 jan. 2018 00:00 instead of 01:00am
+                    // See https://www.timeanddate.com/worldclock/converter.html?iso=20180101T050000&p1=1440&p2=4057
+                    var localWindows = TimeZoneInfo.ConvertTimeFromUtc(utc, turkCaico);
+                    var localZoneInfo = zoneInfo.ToLocalTime(utc, false);
 
-                Assert.Equal(localWindows, localZoneInfo);
+                    Assert.Equal(localWindows, localZoneInfo);
+                }
                 utc = utc.AddHours(1);
             }
         }
