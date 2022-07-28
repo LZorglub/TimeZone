@@ -6,7 +6,7 @@
     <Description>Afk.ZoneInfo is a .Net library which use the Iana timezone database. By default the library is linked with database files, to override it set the environment variable TZDIR with the new directory of database files.</Description>
     <Copyright>Copyright (c) 2010</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>3.0</Version>
+    <Version>4.0</Version>
     <Authors>Luc Nempont</Authors>
     <Title>TimeZone</Title>
     
@@ -72,7 +72,6 @@
     <EmbeddedResource Include="data\iso3166.tab" />
     <EmbeddedResource Include="data\leapseconds" />
     <EmbeddedResource Include="data\northamerica" />
-    <EmbeddedResource Include="data\pacificnew" />
     <EmbeddedResource Include="data\solar87" />
     <EmbeddedResource Include="data\solar88" />
     <EmbeddedResource Include="data\solar89" />

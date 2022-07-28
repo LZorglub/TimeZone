@@ -355,10 +355,18 @@ namespace Afk.ZoneInfo
                 if (eps >= TimeSpan.Zero) epss = "+" + epss;
 
                 string result = format.Replace("#F", string.Format(CultureInfo.InvariantCulture, zr.zoneRule.Format.Replace("%s", "{0}"), (zr.Letter == "-") ? "" : zr.Letter));
+                
+                if (result.Contains("zzz"))
+                {
+                    // If zzz we want the date in the current local zone
+                    if (datetime.Kind == DateTimeKind.Utc) datetime = ToLocalTime(datetime);
+                    result = result.Replace("zzz", epss);
+                } 
+
                 if (datetime.Kind == DateTimeKind.Utc)
-                    result = result.Replace("K", "Z").Replace("zzz", "Z");
+                    result = result.Replace("K", "Z");
                 else
-                    result = result.Replace("K", epss).Replace("zzz", epss);
+                    result = result.Replace("K", epss);
 
                 return datetime.ToString(result, CultureInfo.CurrentCulture);
             }

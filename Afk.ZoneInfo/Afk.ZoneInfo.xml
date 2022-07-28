@@ -331,11 +331,6 @@
             Gets the timezone for Africa/Abidjan
             </summary>
         </member>
-        <member name="P:Afk.ZoneInfo.Zones.Africa.Accra">
-            <summary>
-            Gets the timezone for Africa/Accra
-            </summary>
-        </member>
         <member name="P:Afk.ZoneInfo.Zones.Africa.Algiers">
             <summary>
             Gets the timezone for Africa/Algiers
@@ -526,11 +521,6 @@
             Gets the timezone for America/Asuncion
             </summary>
         </member>
-        <member name="P:Afk.ZoneInfo.Zones.America.Atikokan">
-            <summary>
-            Gets the timezone for America/Atikokan
-            </summary>
-        </member>
         <member name="P:Afk.ZoneInfo.Zones.America.Bahia">
             <summary>
             Gets the timezone for America/Bahia
@@ -554,11 +544,6 @@
         <member name="P:Afk.ZoneInfo.Zones.America.Belize">
             <summary>
             Gets the timezone for America/Belize
-            </summary>
-        </member>
-        <member name="P:Afk.ZoneInfo.Zones.America.Blanc_Sablon">
-            <summary>
-            Gets the timezone for America/Blanc-Sablon
             </summary>
         </member>
         <member name="P:Afk.ZoneInfo.Zones.America.Boa_Vista">
@@ -616,19 +601,9 @@
             Gets the timezone for America/Costa_Rica
             </summary>
         </member>
-        <member name="P:Afk.ZoneInfo.Zones.America.Creston">
-            <summary>
-            Gets the timezone for America/Creston
-            </summary>
-        </member>
         <member name="P:Afk.ZoneInfo.Zones.America.Cuiaba">
             <summary>
             Gets the timezone for America/Cuiaba
-            </summary>
-        </member>
-        <member name="P:Afk.ZoneInfo.Zones.America.Curacao">
-            <summary>
-            Gets the timezone for America/Curacao
             </summary>
         </member>
         <member name="P:Afk.ZoneInfo.Zones.America.Danmarkshavn">
@@ -684,11 +659,6 @@
         <member name="P:Afk.ZoneInfo.Zones.America.Glace_Bay">
             <summary>
             Gets the timezone for America/Glace_Bay
-            </summary>
-        </member>
-        <member name="P:Afk.ZoneInfo.Zones.America.Godthab">
-            <summary>
-            Gets the timezone for America/Godthab
             </summary>
         </member>
         <member name="P:Afk.ZoneInfo.Zones.America.Goose_Bay">
@@ -906,11 +876,6 @@
             Gets the timezone for America/Montevideo
             </summary>
         </member>
-        <member name="P:Afk.ZoneInfo.Zones.America.Nassau">
-            <summary>
-            Gets the timezone for America/Nassau
-            </summary>
-        </member>
         <member name="P:Afk.ZoneInfo.Zones.America.New_York">
             <summary>
             Gets the timezone for America/New_York
@@ -956,6 +921,11 @@
             Gets the timezone for America/North_Dakota/New_Salem
             </summary>
         </member>
+        <member name="P:Afk.ZoneInfo.Zones.America.Nuuk">
+            <summary>
+            Gets the timezone for America/Nuuk
+            </summary>
+        </member>
         <member name="P:Afk.ZoneInfo.Zones.America.Ojinaga">
             <summary>
             Gets the timezone for America/Ojinaga
@@ -979,11 +949,6 @@
         <member name="P:Afk.ZoneInfo.Zones.America.Phoenix">
             <summary>
             Gets the timezone for America/Phoenix
-            </summary>
-        </member>
-        <member name="P:Afk.ZoneInfo.Zones.America.Port_of_Spain">
-            <summary>
-            Gets the timezone for America/Port_of_Spain
             </summary>
         </member>
         <member name="P:Afk.ZoneInfo.Zones.America.Port_au_Prince">
@@ -1146,11 +1111,6 @@
             Gets the timezone for Antarctica/Davis
             </summary>
         </member>
-        <member name="P:Afk.ZoneInfo.Zones.Antarctica.DumontDUrville">
-            <summary>
-            Gets the timezone for Antarctica/DumontDUrville
-            </summary>
-        </member>
         <member name="P:Afk.ZoneInfo.Zones.Antarctica.Macquarie">
             <summary>
             Gets the timezone for Antarctica/Macquarie
@@ -1169,11 +1129,6 @@
         <member name="P:Afk.ZoneInfo.Zones.Antarctica.Rothera">
             <summary>
             Gets the timezone for Antarctica/Rothera
-            </summary>
-        </member>
-        <member name="P:Afk.ZoneInfo.Zones.Antarctica.Syowa">
-            <summary>
-            Gets the timezone for Antarctica/Syowa
             </summary>
         </member>
         <member name="P:Afk.ZoneInfo.Zones.Antarctica.Troll">
@@ -1461,6 +1416,11 @@
             Gets the timezone for Asia/Qatar
             </summary>
         </member>
+        <member name="P:Afk.ZoneInfo.Zones.Asia.Qostanay">
+            <summary>
+            Gets the timezone for Asia/Qostanay
+            </summary>
+        </member>
         <member name="P:Afk.ZoneInfo.Zones.Asia.Qyzylorda">
             <summary>
             Gets the timezone for Asia/Qyzylorda
@@ -1654,11 +1614,6 @@
         <member name="P:Afk.ZoneInfo.Zones.Australia.Broken_Hill">
             <summary>
             Gets the timezone for Australia/Broken_Hill
-            </summary>
-        </member>
-        <member name="P:Afk.ZoneInfo.Zones.Australia.Currie">
-            <summary>
-            Gets the timezone for Australia/Currie
             </summary>
         </member>
         <member name="P:Afk.ZoneInfo.Zones.Australia.Darwin">
@@ -2036,11 +1991,6 @@
             Gets the timezone for Pacific/Efate
             </summary>
         </member>
-        <member name="P:Afk.ZoneInfo.Zones.Pacific.Enderbury">
-            <summary>
-            Gets the timezone for Pacific/Enderbury
-            </summary>
-        </member>
         <member name="P:Afk.ZoneInfo.Zones.Pacific.Fakaofo">
             <summary>
             Gets the timezone for Pacific/Fakaofo
@@ -2079,6 +2029,11 @@
         <member name="P:Afk.ZoneInfo.Zones.Pacific.Honolulu">
             <summary>
             Gets the timezone for Pacific/Honolulu
+            </summary>
+        </member>
+        <member name="P:Afk.ZoneInfo.Zones.Pacific.Kanton">
+            <summary>
+            Gets the timezone for Pacific/Kanton
             </summary>
         </member>
         <member name="P:Afk.ZoneInfo.Zones.Pacific.Kiritimati">
