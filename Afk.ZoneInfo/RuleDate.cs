@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Afk.ZoneInfo
@@ -8,14 +9,14 @@ namespace Afk.ZoneInfo
     /// </summary>
     class RuleDate
     {
-        private Dictionary<int, DateTime> dYears;
+        private ConcurrentDictionary<int, DateTime> dYears;
 
         /// <summary>
         /// Initialise une nouvelle instance de <see cref="RuleDate"/>
         /// </summary>
         internal RuleDate()
         {
-            dYears = new Dictionary<int, DateTime>();
+            dYears = new ConcurrentDictionary<int, DateTime>();
         }
 
         /// <summary>

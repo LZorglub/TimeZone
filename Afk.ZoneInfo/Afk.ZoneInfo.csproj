@@ -6,7 +6,7 @@
     <Description>Afk.ZoneInfo is a .Net library which use the Iana timezone database. By default the library is linked with database files, to override it set the environment variable TZDIR with the new directory of database files.</Description>
     <Copyright>Copyright (c) 2010</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>4.0</Version>
+    <Version>4.1</Version>
     <Authors>Luc Nempont</Authors>
     <Title>TimeZone</Title>
     
@@ -17,7 +17,7 @@
     <PackageIcon>Timezone64x64.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/LZorglub/TimeZone</RepositoryUrl>
-    <PackageReleaseNotes>NetStandard 2.0 &amp; FxCop</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
