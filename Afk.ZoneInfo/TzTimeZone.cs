@@ -81,7 +81,7 @@ namespace Afk.ZoneInfo
         /// </summary>
         /// <param name="year">Année de recherche</param>
         /// <returns><see cref="DateTime">DateTime[]</see> des changements qui surviennent dans l'année spécifié.</returns>
-        internal DateTime[] GetDayChangeTime(int year)
+        public DateTime[] GetDayChangeTime(int year)
         {
             List<DateTime> dates = new List<DateTime>();
 
