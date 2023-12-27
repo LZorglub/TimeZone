@@ -6,21 +6,26 @@
     <Description>Afk.ZoneInfo is a .Net library which use the Iana timezone database. By default the library is linked with database files, to override it set the environment variable TZDIR with the new directory of database files.</Description>
     <Copyright>Copyright (c) 2010</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>4.1</Version>
+    <Version>4.2</Version>
     <Authors>Luc Nempont</Authors>
     <Title>TimeZone</Title>
     
     <PackageId>Afk.ZoneInfo</PackageId>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>timezone datetime zoneinfo iana c# olson</PackageTags>
+    <PackageTags>timezone;datetime;zoneinfo;iana;c#;olson</PackageTags>
     <PackageProjectUrl>https://github.com/LZorglub/TimeZone</PackageProjectUrl>
     <PackageIcon>Timezone64x64.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/LZorglub/TimeZone</RepositoryUrl>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>Upgrade to 2023d database</PackageReleaseNotes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="Timezone64x64.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   
@@ -37,30 +42,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="data\africa" />
-    <None Remove="data\antarctica" />
-    <None Remove="data\asia" />
-    <None Remove="data\australasia" />
-    <None Remove="data\backward" />
-    <None Remove="data\etcetera" />
-    <None Remove="data\europe" />
-    <None Remove="data\factory" />
-    <None Remove="data\iso3166.tab" />
-    <None Remove="data\leapseconds" />
-    <None Remove="data\northamerica" />
-    <None Remove="data\pacificnew" />
-    <None Remove="data\solar87" />
-    <None Remove="data\solar88" />
-    <None Remove="data\solar89" />
-    <None Remove="data\southamerica" />
-    <None Remove="data\systemv" />
-    <None Remove="data\windowsZones.tab" />
-    <None Remove="data\yearistype.sh" />
-    <None Remove="data\zone.tab" />
-    <None Remove="data\zone1970.tab" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="data\africa" />
     <EmbeddedResource Include="data\antarctica" />
     <EmbeddedResource Include="data\asia" />
@@ -68,13 +49,9 @@
     <EmbeddedResource Include="data\backward" />
     <EmbeddedResource Include="data\etcetera" />
     <EmbeddedResource Include="data\europe" />
-    <EmbeddedResource Include="data\factory" />
     <EmbeddedResource Include="data\iso3166.tab" />
     <EmbeddedResource Include="data\leapseconds" />
     <EmbeddedResource Include="data\northamerica" />
-    <EmbeddedResource Include="data\solar87" />
-    <EmbeddedResource Include="data\solar88" />
-    <EmbeddedResource Include="data\solar89" />
     <EmbeddedResource Include="data\southamerica" />
     <EmbeddedResource Include="data\systemv" />
     <EmbeddedResource Include="data\windowsZones.tab" />
@@ -84,21 +61,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="T4Zones.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>T4Zones.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
   <ItemGroup>
