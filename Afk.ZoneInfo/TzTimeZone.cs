@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 namespace Afk.ZoneInfo
 {
@@ -15,8 +16,8 @@ namespace Afk.ZoneInfo
     /// </remarks>
     public sealed class TzTimeZone
     {
-        private List<TzTimeZoneRule> _zoneRules;
-        private Dictionary<int, List<TzTimeZoneRuleDate>> _zoneDates;
+        private readonly List<TzTimeZoneRule> _zoneRules = new List<TzTimeZoneRule>();
+        private TzTimeZoneRuleDate[][][] _zoneDates; // voir ResolveDateChangesForYear
 
         struct ZoneRuleAssociate
         {
@@ -30,8 +31,6 @@ namespace Afk.ZoneInfo
         /// </summary>
         internal TzTimeZone()
         {
-            _zoneRules = new List<TzTimeZoneRule>();
-            _zoneDates = new Dictionary<int, List<TzTimeZoneRuleDate>>();
         }
 
         /// <summary>
@@ -165,69 +164,85 @@ namespace Afk.ZoneInfo
         /// applicable avant cette date.
         /// </summary>
         /// <param name="year"></param>
-        private void UpdateDateChange(int year)
+        private TzTimeZoneRuleDate[] ResolveDateChangesForYear(int year)
         {
-            lock (_zoneDates)
+            Debug.Assert(year >= 1 && year <= 9999);
+
+            // N.B. thread-safe, lock-free; peut occasionnellement calculer la même année deux fois
+
+            // 79 blocs de 128 années, couvre 0001-9999 EC
+            const int blockSize = 128;
+            const int blockCount = 79;
+
+            if (_zoneDates == null)
+                Interlocked.CompareExchange(ref _zoneDates, new TzTimeZoneRuleDate[blockCount][][], null);
+
+            ref var block = ref _zoneDates[year / blockSize];
+            if (block == null)
+                Interlocked.CompareExchange(ref block, new TzTimeZoneRuleDate[blockSize][], null);
+
+            ref var result = ref block[year % blockSize];
+            if (result == null)
+                Interlocked.CompareExchange(ref result, ComputeDateChangesForYear(year), null);
+
+            return result;
+        }
+
+        private TzTimeZoneRuleDate[] ComputeDateChangesForYear(int year)
+        {
+            Dictionary<DateTime, TzTimeZoneRuleDate> dico = new Dictionary<DateTime, TzTimeZoneRuleDate>();
+
+            for (int index = ZoneRules.Count - 1; index >= 0; index--)
             {
-                if (!_zoneDates.ContainsKey(year))
+                TzTimeZoneRule temp = ZoneRules[index];
+
+                if ((temp.StartZone.UtcDate.Year <= year && temp.EndZone.UtcDate.Year >= year) ||
+                    (temp.StartZone.ToLocalTime().Year <= year && temp.EndZone.ToLocalTime().Year >= year))
                 {
-                    Dictionary<DateTime, TzTimeZoneRuleDate> dico = new Dictionary<DateTime, TzTimeZoneRuleDate>();
-
-                    _zoneDates.Add(year, new List<TzTimeZoneRuleDate>());
-
-                    for (int index = ZoneRules.Count - 1; index >= 0; index--)
+                    if (TzTimeInfo.Rules.ContainsKey(temp.RuleName))
                     {
-                        TzTimeZoneRule temp = ZoneRules[index];
+                        List<Rule> rules = TzTimeInfo.Rules[temp.RuleName];
 
-                        if ((temp.StartZone.UtcDate.Year <= year && temp.EndZone.UtcDate.Year >= year) ||
-                            (temp.StartZone.ToLocalTime().Year <= year && temp.EndZone.ToLocalTime().Year >= year))
+                        foreach (Rule rule in rules)
                         {
-                            if (TzTimeInfo.Rules.ContainsKey(temp.RuleName))
+                            // On calcule sur trois années pour couvrir les changements d'heure de fin d'année et début d'année
+                            for (int yearRef = year - 1; yearRef <= year + 1; yearRef++)
                             {
-                                List<Rule> rules = TzTimeInfo.Rules[temp.RuleName];
-
-                                foreach (Rule rule in rules)
+                                if (rule.LowerYear <= yearRef && rule.HighYear >= yearRef && TzUtilities.IsYearType(yearRef, rule.YearType))
                                 {
-                                    // On calcule sur trois années pour couvrir les changements d'heure de fin d'année et début d'année
-                                    for (int yearRef = year - 1; yearRef <= year + 1; yearRef++)
-                                    {
-                                        if (rule.LowerYear <= yearRef && rule.HighYear >= yearRef && TzUtilities.IsYearType(yearRef, rule.YearType))
-                                        {
-                                            // Standard offset applicable à cette règle
-                                            TimeSpan stdoff = GetLastSaveOffset(yearRef, rules, rule, temp.StartZone, temp.GmtOffset);
-                                            // Date UTC et Local d'application de cette règle
-                                            DateTime utc = TzUtilities.GetDateTime(rule, yearRef, temp.GmtOffset, stdoff, DateTimeKind.Utc);
-                                            DateTime local = TzUtilities.GetDateTime(rule, yearRef, temp.GmtOffset, stdoff, DateTimeKind.Local);
+                                    // Standard offset applicable à cette règle
+                                    TimeSpan stdoff = GetLastSaveOffset(yearRef, rules, rule, temp.StartZone, temp.GmtOffset);
+                                    // Date UTC et Local d'application de cette règle
+                                    DateTime utc = TzUtilities.GetDateTime(rule, yearRef, temp.GmtOffset, stdoff, DateTimeKind.Utc);
+                                    DateTime local = TzUtilities.GetDateTime(rule, yearRef, temp.GmtOffset, stdoff, DateTimeKind.Local);
 
-                                            // Contient les dates de la règle avec le décalage gmt et standard applicable AVANT cette date
-                                            TzTimeZoneRuleDate ruleDate = new TzTimeZoneRuleDate(utc, local, temp.GmtOffset, stdoff);
-                                            if (ruleDate > temp.StartZone && ruleDate <= temp.EndZone)
-                                            {
-                                                if (!dico.ContainsKey(ruleDate.UtcDate))
-                                                    dico.Add(ruleDate.UtcDate, ruleDate);
-                                            }
-                                        }
+                                    // Contient les dates de la règle avec le décalage gmt et standard applicable AVANT cette date
+                                    TzTimeZoneRuleDate ruleDate = new TzTimeZoneRuleDate(utc, local, temp.GmtOffset, stdoff);
+                                    if (ruleDate > temp.StartZone && ruleDate <= temp.EndZone)
+                                    {
+                                        if (!dico.ContainsKey(ruleDate.UtcDate))
+                                            dico.Add(ruleDate.UtcDate, ruleDate);
                                     }
                                 }
                             }
                         }
                     }
-
-                    // On ajoute les changements induits par les date until de zone
-                    for (int index = ZoneRules.Count - 1; index >= 0; index--)
-                    {
-                        TzTimeZoneRule temp = ZoneRules[index];
-
-                        if (temp.EndZone.UtcDate.Year == year || temp.EndZone.ToLocalTime().Year == year)
-                        {
-                            if (!dico.ContainsKey(temp.EndZone.UtcDate))
-                                dico.Add(temp.EndZone.UtcDate, temp.EndZone);
-                        }
-                    }
-
-                    _zoneDates[year].AddRange(dico.Values.OrderBy(e => e.UtcDate));
                 }
             }
+
+            // On ajoute les changements induits par les date until de zone
+            for (int index = ZoneRules.Count - 1; index >= 0; index--)
+            {
+                TzTimeZoneRule temp = ZoneRules[index];
+
+                if (temp.EndZone.UtcDate.Year == year || temp.EndZone.ToLocalTime().Year == year)
+                {
+                    if (!dico.ContainsKey(temp.EndZone.UtcDate))
+                        dico.Add(temp.EndZone.UtcDate, temp.EndZone);
+                }
+            }
+
+            return dico.Values.OrderBy(e => e.UtcDate).ToArray();
         }
 
         /// <summary>
@@ -242,18 +257,15 @@ namespace Afk.ZoneInfo
 
             if (datetime.Kind == DateTimeKind.Local) return datetime;
 
+            Debug.Assert(datetime.Kind == DateTimeKind.Utc);
+
             if (optimize)
             {
-                UpdateDateChange(datetime.Year);
-                List<TzTimeZoneRuleDate> knownDate = _zoneDates[datetime.Year];
-                if (knownDate.Any())
+                var knownDate = ResolveDateChangesForYear(datetime.Year);
+                foreach (var elt in knownDate)
                 {
-                    foreach (var elt in knownDate)
-                    {
-                        if ((datetime < elt.UtcDate && datetime.Kind == DateTimeKind.Utc) ||
-                            (datetime < elt.ToLocalTime() && datetime.Kind == DateTimeKind.Local))
-                            return TzUtilities.GetDateTime(datetime, elt.GmtOffset, elt.StandardOffset, DateTimeKind.Local);
-                    }
+                    if (datetime < elt.UtcDate)
+                        return TzUtilities.GetDateTime(datetime, elt.GmtOffset, elt.StandardOffset, DateTimeKind.Local);
                 }
             }
 
@@ -278,6 +290,8 @@ namespace Afk.ZoneInfo
 
             if (datetime.Kind == DateTimeKind.Utc) return datetime;
 
+            Debug.Assert(datetime.Kind == DateTimeKind.Local);
+
             // Check that local date is cover by zone
             if (!ZoneRules.Any(z => datetime >= z.StartZone.ToLocalTime() && datetime < z.EndZone.ToLocalTime()))
             {
@@ -286,16 +300,11 @@ namespace Afk.ZoneInfo
 
             if (optimize)
             {
-                UpdateDateChange(datetime.Year);
-                List<TzTimeZoneRuleDate> knownDate = _zoneDates[datetime.Year];
-                if (knownDate.Any())
+                var knownDate = ResolveDateChangesForYear(datetime.Year);
+                foreach (var elt in knownDate)
                 {
-                    foreach (var elt in knownDate)
-                    {
-                        if ((datetime.Kind == DateTimeKind.Utc && datetime < elt.UtcDate) ||
-                            (datetime.Kind == DateTimeKind.Local && datetime < elt.ToLocalTime()))
-                            return TzUtilities.GetDateTime(datetime, elt.GmtOffset, elt.StandardOffset, DateTimeKind.Utc);
-                    }
+                    if (datetime < elt.ToLocalTime())
+                        return TzUtilities.GetDateTime(datetime, elt.GmtOffset, elt.StandardOffset, DateTimeKind.Utc);
                 }
             }
 
